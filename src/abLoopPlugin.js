@@ -92,7 +92,7 @@ videojs.plugin('abLoopPlugin', function (initialOptions) {
 	}						
 	var setStartOfLoop = function(time){
 		time = (time == undefined) ? player.currentTime() : time;
-		opts.start = player.currentTime();
+		opts.start = time;
 		return api;
 	}		
 	var setEndOfLoop = function(time){

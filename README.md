@@ -3,7 +3,7 @@ This is a plugin for video.js.
 It provides an A/B loop function, allowing a section of a video to be looped over repeatedly.
 
 Interface
-=========
+---------
 
 There is no user interface, just an API. 
 
@@ -15,7 +15,7 @@ Assuming "video" references a videojs instance
 You could use the existing hotkeys plugin to make keyboard controls.
 
 Sample usage
-============
+------------
 
 ```html
 <!DOCTYPE html>
@@ -68,7 +68,8 @@ Sample usage
 </html>
 ```
 
-==TODO==
+TODO
+----
 
 * Add sample hotkeys extension code to control the loop
 * Replace callback with event emission

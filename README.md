@@ -7,10 +7,10 @@ Interface
 
 There is no user interface, just an API. 
 
-Assuming ```video``` references a videojs instance 
-* Look at ```video.abLoopPlugin.api``` for functions to call to control the loop.
-* Alternatively options can be set and read at ```video.abLoopPlugin.options```. You could save settings by writing this as JSON or whatever.
-* An onLoop callback can be set at ```video.abLoopPlugin.onLoopCallBack```, as in the example below.
+Assuming ```player``` references a videojs instance 
+* Look at ```player.abLoopPluginAPI``` for functions to call to control the loop.
+* Alternatively options can be set and read at ```player.abLoopPluginAPI.options```. You could save settings by writing this as JSON or whatever.
+* An onLoop callback can be set at ```player.abLoopPluginAPI.onLoopCallBack```, as in the example below.
 
 You could use the existing hotkeys plugin to make keyboard controls.
 
@@ -51,7 +51,7 @@ Sample usage
 	video.play();
 	
 	//add a callback to be called when the loop happens
-	video.abLoopPlugin.onLoopCallBack = function(plugin,opts,player){
+	video.abLoopPluginAPI.onLoopCallBack = function(pluginapi,opts,player){
 		console.log("Looping video: start %s, end %s", opts.start, opts.end);
 		opts.pauseOnLoop = true;     //this should make the video pause at the beginning of the subsequent loop
 	};
@@ -59,7 +59,7 @@ Sample usage
 	//set properties dynamically
 	setTimeout(function() {	
 		console.log("setting new start and end...");
-		video.abLoopPlugin.api.setStart().setEnd(10).enable();
+		video.abLoopPluginAPI.setStart().setEnd(10).enable();
 	} , 5000);
 	
   </script>

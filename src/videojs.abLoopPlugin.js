@@ -129,6 +129,10 @@
 			opts.enabled = false;
 			return api;
 		}
+		var togglePauseOnLoop = function(){
+			opts.pauseOnLoop = !opts.pauseOnLoop;
+			return api;
+		}
 		/*var getOptions = function(){
 			return opts; 
 		}*/
@@ -145,6 +149,7 @@
 		api.enable = enableLoop;
 		api.disable = disableLoop;
 		api.toggle = toggleLoop;
+		api.togglePauseOnLoop = togglePauseOnLoop;
 		
 		//sample callback function - called when the loop happens
 		api.onLoopCallBack = function(api,opts,player){

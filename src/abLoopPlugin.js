@@ -143,7 +143,7 @@ videojs.plugin('abLoopPlugin', function (initialOptions) {
 		
 		if (opts.moveToStartIfBeforeStart && curTime < opts.start){
 			goToStartOfLoop();
-		} else if (curTime > opts.end){
+		} else if (curTime >= opts.end){
 			//use a margin of one just in case time has skipped a bit past
 			if ((curTime - opts.end) < 1 || opts.moveToStartIfAfterEnd){
 				goToStartOfLoop();

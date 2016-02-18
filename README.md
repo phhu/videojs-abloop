@@ -7,10 +7,10 @@ Interface
 
 There is no user interface, just an API. 
 
-Assuming "video" references a videojs instance 
-* Look at video.abLoopPlugin.api for functions to call to control the loop.
-* Alternatively options can be set and read at video.abLoopPlugin.options. You could save settings by writing this as JSON or whatever.
-* An onLoop callback can be set at video.abLoopPlugin.onLoopCallBack, as in the example below.
+Assuming ```video``` references a videojs instance 
+* Look at ```video.abLoopPlugin.api``` for functions to call to control the loop.
+* Alternatively options can be set and read at ```video.abLoopPlugin.options```. You could save settings by writing this as JSON or whatever.
+* An onLoop callback can be set at ```video.abLoopPlugin.onLoopCallBack```, as in the example below.
 
 You could use the existing hotkeys plugin to make keyboard controls.
 

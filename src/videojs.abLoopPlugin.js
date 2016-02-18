@@ -28,7 +28,6 @@
 		var api = player[apiName];   
 		api.options = api.options || {};
 		var opts = api.options;		
-		opts.playerId = player.id_;
 		
 		var isNumber = function (n) {
 			return !isNaN(parseFloat(n)) && isFinite(n);

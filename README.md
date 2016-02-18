@@ -52,7 +52,7 @@ Sample usage
 	
 	//add a callback to be called when the loop happens
 	video.abLoopPlugin.onLoopCallBack = function(plugin,opts,player){
-		console.log("Looping video" );
+		console.log("Looping video: start %s, end %s", opts.start, opts.end);
 		opts.pauseOnLoop = true;     //this should make the video pause at the beginning of the subsequent loop
 	};
 	

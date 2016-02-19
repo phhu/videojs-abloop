@@ -7,65 +7,53 @@ Interface
 
 There is no user interface, just an API. 
 
-Assuming ```player``` references a videojs instance 
-* Look at ```player.abLoopPluginAPI``` for functions to call to control the loop.
-* Alternatively options can be set and read at ```player.abLoopPluginAPI.options```. You could save settings by writing this as JSON or whatever.
-* An onLoop callback can be set at ```player.abLoopPluginAPI.onLoopCallBack```, as in the example below.
+Assuming ```video``` references a videojs instance 
+* Look at ```video.abLoopPlugin``` for functions to call to control the loop.
+* Alternatively options can be set and read at ```video.abLoopPlugin.options```. You could save settings by writing this as JSON or whatever.
+* An onLoop callback can be set at ```video.abLoopPlugin.onLoopCallBack```, as in the example below.
 
 You could use the existing hotkeys plugin to make keyboard controls.
 
 Sample usage
 ------------
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <link href="http://vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet">
-</head>
+See index.html in the samples folder for a working example. 
 
-<body>
-  <video id="video" class="video-js" controls preload="auto" width="640" height="264" data-setup="{}">
-    <source src="video.mp4" type='video/mp4'>
-  </video>
+You initialise the plugin with defaults, and then can set properties at runtime.
 
-  <script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
-  <script src="videoJsABLoopPlugin.js"></script>
-  
-  <script>
-	
-	var video = videojs("video",{
-	  plugins: {
-  		abLoopPlugin: {
-  			start:50    //seconds
-  			,end:55    //leave out or set to false to loop to end of video
-  			,enabled:false
-  			,moveToStartIfBeforeStart:false       //allow video to play normally before the loop section?
-  			,moveToStartIfAfterEnd:true
-  			,pauseOnLoop: false     //if true, after looping video will pause
-  		}
-	  }
-	});
-	
-	//start the video
-	video.play();
-	
-	//add a callback to be called when the loop happens
-	video.abLoopPluginAPI.onLoopCallBack = function(pluginapi,opts,player){
-		console.log("Looping video: start %s, end %s", opts.start, opts.end);
-		opts.pauseOnLoop = true;     //this should make the video pause at the beginning of the subsequent loop
-	};
-	
-	//set properties dynamically
-	setTimeout(function() {	
-		console.log("setting new start and end...");
-		video.abLoopPluginAPI.setStart().setEnd(10).enable();
-	} , 5000);
-	
-  </script>
-  
-</body>
-</html>
+The API methods can be chained together like this: ```video.abLoopPlugin.setStart().setEnd(8).enable();```
+
+```setStart``` and ```setEnd``` will set the start and end positions to the current video position if called with no parameter.
+
+```javascript
+
+//initialise the video with the plugin and initial settings
+var video = videojs("videoid",{
+	plugins: {
+		abLoopPlugin: {
+			start:50    //seconds
+			,end:55    //leave out or set to false to loop to end of video
+			,enabled:false
+			,moveToStartIfBeforeStart:false       //allow video to play normally before the loop section?
+			,moveToStartIfAfterEnd:true
+			,pauseOnLoop: false     //if true, after looping video will pause
+		}
+	}
+});
+
+video.play();
+
+setTimeout(function() { 
+	console.log("setting new start and end...");
+	video.abLoopPlugin.setStart().setEnd(8).enable();
+} , 2000);
+
+video.abLoopPlugin.onLoopCallBack = function(opts,pluginapi,player){
+	console.log("Looping back to %s sec on %s",opts.start, player.currentSrc() );
+	opts.pauseOnLoop = true; 
+	opts.start;
+	opts.end = 15;
+};
 ```
 
 TODO

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="http://vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet">
+	<title>AB loop test page</title>
+</head>
+
+<body>
+	<h2>AB loop test page</h2>
+
+	First video: should play automatically from start, then loop once between 2 and 8 seconds before pausing
+	<video id="video0" class="video-js" controls preload="auto"  width="640" height="264"
+	  poster="http://vjs.zencdn.net/v/oceans.png">
+		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>
+		<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+	</video>
+	
+	<br />
+	
+	Second video - should default to looping between 20 and 25 seconds when played:
+	<video id="video1" class="video-js" controls preload="auto"  width="640" height="264"
+	  poster="http://vjs.zencdn.net/v/oceans.png">
+		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>
+		<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+	</video>
+
+	<script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
+	<script src="../src/videojs.abLoopPlugin.js"></script>
+
+	<script>
+		var videos;
+	
+		videos = [
+			videojs("video0",{
+				plugins: {
+					abLoopPlugin: {
+						start:50    //seconds
+						,end:55    //leave out or set to false to loop to end of video
+						,enabled:false
+						,moveToStartIfBeforeStart:false       //allow video to play normally before the loop section?
+						,moveToStartIfAfterEnd:true
+						,pauseOnLoop: false     //if true, after looping video will pause
+					}
+				}
+			}),
+			videojs("video1")
+		];
+		
+		//initialisation via ready event
+		videos[1].ready(function(){
+			this.abLoopPlugin({
+				start:20    //seconds
+				,end:25 //leave out or set to false to loop to end of video
+				,enabled:true
+				,moveToStartIfBeforeStart:true      //allow video to play normally before the loop section?
+				,moveToStartIfAfterEnd:true
+			});
+		});
+		
+		//start the first video
+		videos[0].play();
+
+		//add a callback to be called when the loop happens
+		videos[0].abLoopPlugin.onLoopCallBack = function(opts,plugin,player){
+			console.log("Looping back to %s sec on %s",opts.start, player.currentSrc() );
+			opts.pauseOnLoop = true; 
+		};
+
+		//set properties dynamically
+		setTimeout(function() { 
+			console.log("setting new start and end...");
+			videos[0].abLoopPlugin.setStart().setEnd(8).enable();
+		} , 2000);
+		
+	</script>
+
+</body>
+</html>

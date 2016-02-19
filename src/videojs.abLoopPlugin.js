@@ -13,7 +13,7 @@
 })(window, function(window, videojs) {
 	"use strict";
 
-	var version = "0.2.0";
+	var version = "0.2.01";
 	var abLoopPlugin = function (initialOptions) {
 		var player = this;
 
@@ -147,6 +147,8 @@
 			
 			if (startTime === endTime){
 				player.pause();				//to save contant looping behaviour
+			} else if (startTime > endTime){
+				return false;
 			} else if (curTime < startTime && opts.moveToStartIfBeforeStart){
 				goToStartOfLoop();	
 			} else if (curTime >= endTime){

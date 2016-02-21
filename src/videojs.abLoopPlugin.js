@@ -13,7 +13,7 @@
 })(window, function(window, videojs) {
 	"use strict";
 
-	var version = "0.3.0";
+	var version = "0.3.1";
 	var abLoopPlugin = function (initialOptions) {
 
 		var defaultOptions = {
@@ -51,7 +51,9 @@
 		
 		//used for validation and setting of boolean options
 		var booleanOptions = ['moveToStartIfBeforeStart','moveToStartIfAfterEnd','enabled','pauseOnLoop'];
-
+		var callbacks = ['onLoopCallBack','onOptionsChange'];
+		var numericOptions = ['start','end'];
+		
 		//check that the options make sense. This is called on timeupdate, before the main logic.
 		//so nonsense options will persist as long as time does not update		
 		var validateOptions = function(){
@@ -94,14 +96,15 @@
 		}
 		
 		var setOptions = function(newOptions,replaceAll){
-			if(newOptions.start){opts.start = newOptions.start;}
-			if(newOptions.end){opts.end=  newOptions.end;}
 			
-			booleanOptions.forEach(function(optName){
+			var setOpt = function(optName){
 				if (replaceAll || newOptions[optName]){
 					opts[optName] = newOptions[optName];
 				}
-			});			
+			} 
+			
+			booleanOptions.forEach(setOpt);			
+			numericOptions.forEach(setOpt);			
 
 			validateOptions();			
 			return api;
@@ -255,7 +258,7 @@
 		];
 
 		var createButton = function(spec,player){
-			
+			console.log("creating button");
 			//returns a function which handles button clicks,
 			var clickFunction = function(abLoopCall,whichButton){
 				return function(event){
@@ -269,7 +272,10 @@
 			//returns a function which handles button text updates
 			var updateTextFunction = function(defaultText,textFunction){
 				return function(){
-					this.el().innerText = textFunction(opts) || defaultText;
+					var text = textFunction(opts) || defaultText;
+					var el = this.el();
+					el.textContent = text;
+					//el.innerText = text;    //doesn't work in Firefox
 				}
 			}
 			
@@ -330,16 +336,19 @@
 			//console.log("Looping back to %s sec on %s",opts.start, player.currentSrc() );
 		//},
 		
+
 		defaultInitialOptions();
-		
-		api.onLoopCallBack = initialOptions.onLoopCallBack;
-		api.onOptionsChange = initialOptions.onOptionsChange;
+		callbacks.forEach(function(cb){
+			if (isFunction(initialOptions[cb])){
+				api[cb] = initialOptions[cb].bind(api);
+			}
+		})
 		
 		if (initialOptions.createButtons){
 			player.ready(function(){createButtons(buttonSpecs);});
 		}
 		
-		//get options to initial options
+		//get options to initial options and notify of change
 		notify(setOptionsToInitialOptions)();	
 		
 		//this replaces the reference created to this function on each player object

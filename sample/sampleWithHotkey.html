@@ -14,7 +14,7 @@
 	<h2>AB loop test page</h2>
 
 	<video id="video0" class="video-js" controls preload="auto"  width="640" height="264"
-	  poster="http://vjs.zencdn.net/v/oceans.png" data-setup='{"fluid": false,"playbackRates": [0.1, 0.2, 0.5, 1, 2, 5]}'>
+	  poster="http://vjs.zencdn.net/v/oceans.png" data-setup='{"controlBar": { "currentTimeDisplay": true,"muteToggle": false },"fluid": false,"playbackRates": [0.1, 0.2, 0.5, 1, 2, 5]}'>
 		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
 		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
 		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>
@@ -82,6 +82,10 @@
 				plugins: {
 
 				}	
+				,cxxontrolBar: {
+					CurrentTimeDisplay: true
+					,muteToggle: false
+				}
 			})
 		];
 		

@@ -53,7 +53,11 @@
 		
 		//initialisation via ready event
 		videos[1].ready(function(){
-			this.abLoopPlugin();
+			this.abLoopPlugin({
+				start:20    //seconds
+				,end:25    //leave out or set to false to loop to end of video
+				,enabled:true
+			});
 		});
 		
 		//start the first video
@@ -61,8 +65,8 @@
 
 		//add a callback to be called when the loop happens
 		videos[0].abLoopPlugin.onLoopCallBack = function(plugin,player){
-			var opts = plugin.getOptions();
-			console.log("Looping back to %s sec on %s",opts.start, player.currentSrc() );
+			var opts = this.getOptions();
+			console.log("Looping back to %s sec on %s",opts.start, this.player.currentSrc() );
 			plugin.setOptions({pauseOnLoop:true}); 
 		};
 

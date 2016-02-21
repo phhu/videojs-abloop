@@ -253,13 +253,12 @@
                 ,'rightclick':function(api){api.togglePauseOnLoop();}
                 ,'defaultText':'Loop'
                 ,'textFunction':function(opts){
-                    return opts.enabled ? (opts.pauseOnLoop ?  'LOOP&\nPAUSE': 'LOOP ON' )  : 'Loop\noff';
+                    return opts.enabled ? (opts.pauseOnLoop ?  'LOOP& PAUSE': 'LOOP ON' )  : 'Loop off';
                 }
             }
         ];
 
         var createButton = function(spec,player){
-            console.log("creating button");
             //returns a function which handles button clicks,
             var clickFunction = function(abLoopCall,whichButton){
                 return function(event){

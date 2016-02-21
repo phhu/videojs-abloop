@@ -31,9 +31,36 @@
 	<script>
 
 	var videos;
-
+	var buttonSpecs;
 	(function(){
 
+		//specs for buttons to create
+		buttonSpecs = {
+			'start': {
+				'leftclick':function(abLoopPlugin){abLoopPlugin.setStart();}
+				,'rightclick':function(abLoopPlugin){abLoopPlugin.goToStart();}
+				,'defaultText':'Start'
+				,'textFunction':function(opts){
+					return videojs.formatTime(opts.start) + '.' + ((opts.start % 1) * 10).toFixed(0);
+				}
+			},
+			'end': {
+				'leftclick':function(abLoopPlugin){abLoopPlugin.setEnd();}
+				,'rightclick':function(abLoopPlugin){abLoopPlugin.goToEnd();}
+				,'defaultText':'End'
+				,'textFunction':function(opts){
+					return videojs.formatTime(opts.end) + '.' + ((opts.end % 1) * 10).toFixed(0);
+				}
+			},
+			'enabled': {
+				'leftclick':function(abLoopPlugin){abLoopPlugin.toggle();}
+				,'rightclick':function(abLoopPlugin){abLoopPlugin.togglePauseOnLoop();}
+				,'defaultText':'Loop'
+				,'textFunction':function(opts){
+					return opts.enabled ? (opts.pauseOnLoop ?  'LOOP&\nPAUSE': 'LOOP ON' )  : 'Loop\noff';
+				}
+			}
+		};
 		//makes details for a custom hotkey
 		var hotKeySpec = function(spec){
 			_.defaultsDeep(spec, {
@@ -88,14 +115,14 @@
 		videos[0].ready(function(){
 
 			this.abLoopPlugin({
-				start:0    //seconds
+				start:5    //seconds
 				,end:10    //leave out or set to false to loop to end of video
 				,enabled:false
 				,moveToStartIfBeforeStart:true       //allow video to play normally before the loop section?
 				,moveToStartIfAfterEnd:true
 				,pauseOnLoop: false     //if true, after looping video will pause
-				,createButtons: true
-				/*,onOptionsChange: function(opts,api,player){
+				,createButtons: false
+				,onOptionsChange: function(opts,api,player){
 					//update button displays if not already done
 					['start','end','enabled','pauseOnLoop'].forEach(function(n){
 						if (opts.changed[n]){
@@ -105,12 +132,68 @@
 							}
 						}
 					});
-				}*/
+				}
 			});
 
 
 			
-		
+			var createABLoopButton = function(spec, buttonName,player){
+				
+				//returns a function which handles button clicks,
+				var clickFunction = function(abLoopCall,whichButton){
+					return function(event){
+						if (whichButton == undefined || (event.which && event.which == whichButton)) {
+							p = this.player();
+							if ( p.abLoopPlugin != undefined && p.abLoopPlugin.loaded){
+								abLoopCall(p.abLoopPlugin);
+								this.updateText();
+							}
+						}
+					};
+				}
+
+				//returns a function which handles button text updates
+				var updateTextFunction = function(defaultText,textFunction){
+					return function(){
+						var text;
+						var p = this.player();
+						if ( p.abLoopPlugin != undefined && p.abLoopPlugin.loaded){
+							text = textFunction(p.abLoopPlugin.getOptions()) ;
+						}
+						this.el().innerText = text || defaultText;
+					}
+				}
+				
+				//create the button
+				spec.button = player.controlBar.addChild('Button');
+				
+				var b = spec.button; 
+				if (spec['leftclick']){
+					b.on('click',clickFunction(spec.leftclick));
+				}
+				if (spec['rightclick']){
+					//event which 
+					//bind the function as it isn't bound by default
+					b.el().onmousedown = clickFunction(spec.rightclick,3).bind(b);
+					//knock out the context menu
+					b.on('contextmenu', function(event) {
+						event.preventDefault();
+						event.stopPropagation();
+						return false;	
+					});
+				}
+
+				//gets called when text on button needs updating
+				b.updateText = updateTextFunction(spec.defaultText,spec.textFunction);
+				b.addClass('abLoopButton');
+				b.addClass(buttonName);
+				b.updateText();	//set the initial text
+			}
+			
+			//create the buttons based on the specs
+			for (var buttonName in buttonSpecs){
+				createABLoopButton( buttonSpecs[buttonName],buttonName, videos[0]);
+			}			
 			this.hotkeys({
 				volumeStep: 0.1,
 				seekStep: 5,

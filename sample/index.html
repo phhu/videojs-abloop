@@ -38,12 +38,13 @@
 			videojs("video0",{
 				plugins: {
 					abLoopPlugin: {
-						start:50    //seconds
-						,end:55    //leave out or set to false to loop to end of video
+						start:0    //seconds
+						,end:10    //leave out or set to false to loop to end of video
 						,enabled:false
 						,moveToStartIfBeforeStart:false       //allow video to play normally before the loop section?
 						,moveToStartIfAfterEnd:true
 						,pauseOnLoop: false     //if true, after looping video will pause
+						,createButtons: true
 					}
 				}
 			}),
@@ -52,23 +53,17 @@
 		
 		//initialisation via ready event
 		videos[1].ready(function(){
-			this.abLoopPlugin({
-				start:20    //seconds
-				,end:25 //leave out or set to false to loop to end of video
-				,enabled:true
-				,moveToStartIfBeforeStart:true      //allow video to play normally before the loop section?
-				,moveToStartIfAfterEnd:true
-				,pauseOnLoop: false     //if true, after looping video will pause
-			});
+			this.abLoopPlugin();
 		});
 		
 		//start the first video
 		videos[0].play();
 
 		//add a callback to be called when the loop happens
-		videos[0].abLoopPlugin.onLoopCallBack = function(opts,plugin,player){
+		videos[0].abLoopPlugin.onLoopCallBack = function(plugin,player){
+			var opts = plugin.getOptions();
 			console.log("Looping back to %s sec on %s",opts.start, player.currentSrc() );
-			opts.pauseOnLoop = true; 
+			plugin.setOptions({pauseOnLoop:true}); 
 		};
 
 		//set properties dynamically

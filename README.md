@@ -24,8 +24,12 @@ API
 
 Assuming ```video``` references a videojs instance 
 * Look at ```video.abLoopPlugin``` for functions to call to control the loop.
-* Options can be set and read with ```video.abLoopPlugin.setOptions({'optionname':value})``` and ```video.abLoopPlugin.getOptions()```. You could save settings by writing this as JSON or whatever.
-* An onLoop callback can be set at ```video.abLoopPlugin.onLoopCallBack```, as in the example below.
+* The API methods can be chained together like this: ```video.abLoopPlugin.setStart().setEnd(8).goToStart().enable();```
+* ```setStart``` and ```setEnd``` will set the start and end positions to the current video position if called with no parameter.
+* Options can be set and read with ```video.abLoopPlugin.setOptions({'optionname':value})``` and ```video.abLoopPlugin.getOptions()``` or ```video.abLoopPlugin.getOptions(["start","end"])```.
+  * You could save settings by writing this as JSON or whatever (see in samples folder for a crude example).
+* An onLoop callback can be set at ```video.abLoopPlugin.onLoopCallBack``` or in the setup options (see example below).
+* An onOptionsChange callback can be set at ```video.abLoopPlugin.onOptionsChange``` or in the setup options. This is useful if you implement your own interface.
 
 Keyboard
 --------
@@ -37,11 +41,13 @@ Sample usage
 
 See the samples folder for working examples. 
 
+Include the script:
+
+```html
+<script src="../src/videojs.abLoopPlugin.js"></script>
+```
+
 You initialise the plugin with defaults, and then can set properties at runtime.
-
-The API methods can be chained together like this: ```video.abLoopPlugin.setStart().setEnd(8).enable();```
-
-```setStart``` and ```setEnd``` will set the start and end positions to the current video position if called with no parameter.
 
 ```javascript
 
@@ -70,7 +76,7 @@ video.abLoopPlugin.onLoopCallBack = function(api,player){
 	var opts = api.getOptions();
 	console.log("Looping back to %s sec on %s",opts.start, player.currentSrc() );
 	api.setOptions({'pauseOnLoop': true}); 
-	this.setStart(5);
+	api.setStart(5);
 	api.setEnd(15);
 };
 ```

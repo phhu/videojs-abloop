@@ -22,6 +22,14 @@ You can set the buttons not to create using the ```createButtons``` setup option
 API
 ---
 
+The plugin is controlled by an internal opts object that looks something like this.
+
+```javascript
+{"start":0,"end":10,"enabled":false,"moveToStartIfBeforeStart":true,"moveToStartIfAfterEnd":true,"pauseOnLoop":false}
+```
+
+These can be set on plugin setup or dynamically via API commands.
+
 Assuming ```video``` references a videojs player instance:
 * Look at ```video.abLoopPlugin``` for functions to call to control the loop.
 * The API methods can be chained together like this: ```video.abLoopPlugin.setStart().setEnd(8).goToStart().enable();```

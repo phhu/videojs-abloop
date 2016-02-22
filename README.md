@@ -55,12 +55,13 @@ You initialise the plugin with defaults, and then can set properties at runtime.
 var video = videojs("videoid",{
 	plugins: {
 		abLoopPlugin: {
-			start:50    //seconds
-			,end:55    //leave out or set to false to loop to end of video
-			,enabled:false
-			,moveToStartIfBeforeStart:false       //allow video to play normally before the loop section?
-			,moveToStartIfAfterEnd:true
-			,pauseOnLoop: false     //if true, after looping video will pause
+			start:50    	//in seconds - defaults to 0
+			,end:55    	//in seconds. Set to  false to loop to end of video. Defaults to false
+			,enabled:false			//defaults to false
+			,moveToStartIfBeforeStart:false //allow video to play normally before the loop section? defaults to true
+			,moveToStartIfAfterEnd:true	// defaults to true
+			,pauseOnLoop: false     	//if true, after looping video will pause. Defaults to false
+			,createButtons: true		//defaults to true
 		}
 	}
 });

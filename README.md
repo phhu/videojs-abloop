@@ -22,11 +22,12 @@ You can set the buttons not to create using the ```createButtons``` setup option
 API
 ---
 
-Assuming ```video``` references a videojs instance 
+Assuming ```video``` references a videojs player instance:
 * Look at ```video.abLoopPlugin``` for functions to call to control the loop.
 * The API methods can be chained together like this: ```video.abLoopPlugin.setStart().setEnd(8).goToStart().enable();```
 * ```setStart``` and ```setEnd``` will set the start and end positions to the current video position if called with no parameter.
-* Options can be set and read with ```video.abLoopPlugin.setOptions({'optionname':value})``` and ```video.abLoopPlugin.getOptions()``` or ```video.abLoopPlugin.getOptions(["start","end"])```.
+* Options can be set  with ```video.abLoopPlugin.setOptions({'optionname':value})``` 
+* Options can be read with ```video.abLoopPlugin.getOptions()``` or to return some options ```video.abLoopPlugin.getOptions(["start","end"])```.
   * You could save settings by writing this as JSON or whatever (see in samples folder for a crude example).
 * An onLoop callback can be set at ```video.abLoopPlugin.onLoopCallBack``` or in the setup options (see example below).
 * An onOptionsChange callback can be set at ```video.abLoopPlugin.onOptionsChange``` or in the setup options. This is useful if you implement your own interface.

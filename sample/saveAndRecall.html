@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="http://vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet">
+	<title>AB loop test page</title>
+</head>
+
+<body>
+	<h2>AB loop test page</h2>
+
+	First video
+	<video id="video0" class="video-js" controls preload="auto"  width="640" height="264"
+	  poster="http://vjs.zencdn.net/v/oceans.png">
+		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>
+		<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+	</video>
+	<button onclick="saveSettings(videos[0]);" >Save</button>
+	
+	<br />
+	
+	Second video
+	<video id="video1" class="video-js" controls preload="auto"  width="640" height="264"
+	  poster="http://vjs.zencdn.net/v/oceans.png">
+		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>
+		<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+	</video>
+	<button onclick="saveSettings(videos[1]);" >Save</button>
+	<br /><textarea id="data" cols="80"></textarea>
+	<button onclick="loadSettings();" >Load</button>
+	<script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
+	<script src="../src/videojs.abLoopPlugin.js"></script>
+
+	<script>
+		var videos = [
+			videojs("video0",{
+				plugins: {
+					abLoopPlugin: {	start:0,end:10	}
+				}
+			}),
+			videojs("video1",{
+				plugins: {
+					abLoopPlugin: {	start:20,end:25,enabled:true	}
+				}
+			})
+		];
+		
+		//start the first video
+		videos[0].play();
+
+		var saveSettings = function(player){
+			var t = document.getElementById('data');
+			var a = player.abLoopPlugin;
+			
+			var data = a.getOptions(["start","end"]);
+			data.source	= a.player.currentSrc();
+
+			t.value=JSON.stringify(data);
+		};
+		
+		var loadSettings = function(){
+			var t = document.getElementById('data');
+			var data = JSON.parse(t.value);
+			var target = findPlayer(videojs.players, data.source);
+			if (target){
+				var a = target.abLoopPlugin;
+				a.setOptions(data);
+				a.goToStart().enable().player.play();
+			}
+		};
+		
+		var findPlayer = function(players, source,first){
+			var target;
+			for (var n in players){
+				if (source == players[n].currentSrc()){
+					target = players[n];
+					if (first){return target;}
+				}	
+			};	
+			return target || false;
+		};
+		
+	</script>;
+
+</body>
+</html>

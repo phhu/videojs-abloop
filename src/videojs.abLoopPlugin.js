@@ -101,7 +101,7 @@
         var setOptions = function(newOptions,replaceAll){
 
             var setOpt = function(optName){
-                if (replaceAll || newOptions[optName]){
+                if (replaceAll || newOptions[optName] !== undefined){
                     opts[optName] = newOptions[optName];
                 }
             };
@@ -157,10 +157,36 @@
             opts.pauseOnLoop = !opts.pauseOnLoop;
             return api;
         };
-        var getOptions = function(){
-            var o = JSON.parse(JSON.stringify(opts));
-            return o;
+        
+        var cloneAndPluck = function(sourceObject, keys) {
+            var newObject = {};
+            keys.forEach(function(key) {
+                if(sourceObject[key] !== undefined){
+                    newObject[key] = sourceObject[key]; 
+                }
+            });
+            return newObject;
         };
+        
+        var getOptions = function(optionsToReturn){
+
+            var retOpts = optionsToReturn;
+            
+            //coerce retOpts into an Array
+            if( typeof optionsToReturn === 'string' ) {
+                retOpts= [optionsToReturn];
+            } else if (optionsToReturn === undefined || !Array.isArray(optionsToReturn)){
+                if (optionsToReturn !== null && typeof optionsToReturn === 'object'){
+                    retOpts = Object.keys(optionsToReturn);
+                } else {
+                    retOpts = Object.keys(defaultOptions);
+                }
+            } 
+            
+            return cloneAndPluck(opts,retOpts);
+            
+        };
+        
         //used to add notification to a function call
         //changed is an object of properties which have changed
         //e.g. {'start':true, 'end':false}

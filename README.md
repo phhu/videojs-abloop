@@ -43,7 +43,7 @@ Assuming ```video``` references a videojs player instance:
 Keyboard
 --------
 
-You could use the existing hotkeys plugin to make keyboard controls. See the samples directory for an example.
+You could use the existing [hotkeys plugin](https://github.com/ctd1500/videojs-hotkeys) to make keyboard controls. See the samples directory for an example.
 
 Sample usage
 ============

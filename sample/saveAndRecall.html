@@ -1,37 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link href="http://vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet">
+	<link href="video-js.css" rel="stylesheet">
 	<title>AB loop test page</title>
+	<style>
+		.vjs-paused .vjs-big-play-button { display: none; }
+		/* show control bar at start */
+		.vjs-control-bar {
+			visibility: visible !important;
+			display: flex !important;
+		}
+<!--
+		xopacity: 1 !important;
+		xtransition-duration: 0s!important;
+
+-->
+		
+	</style>
 </head>
 
 <body>
 	<h2>AB loop test page</h2>
 
 	First video
-	<video id="video0" class="video-js" controls preload="auto"  width="640" height="264"
-	  poster="http://vjs.zencdn.net/v/oceans.png">
-		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
-		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
-		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>
-		<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+	<video id="video0" class="video-js" controls preload="auto" width="640" height="264" data-setup='"fluid": false,"playbackRates": [0.1, 0.2, 0.5, 1, 2, 5], "inactivityTimeout": 0 }'>
+		<source src="oceans.mp4" type='video/mp4'>
+		<!--
+		<source src="oceans.mp4#t=10,12" type='video/mp4'>
+		-->
 	</video>
 	<button onclick="saveSettings(videos[0]);" >Save</button>
 	
 	<br />
 	
 	Second video
-	<video id="video1" class="video-js" controls preload="auto"  width="640" height="264"
-	  poster="http://vjs.zencdn.net/v/oceans.png">
-		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
-		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
-		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>
-		<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+	<video id="video1" class="video-js" controls preload="auto"  width="640" height="264">
+		<source src="oceans.mp4" type='video/mp4'>
 	</video>
 	<button onclick="saveSettings(videos[1]);" >Save</button>
 	<br /><textarea id="data" cols="80"></textarea>
 	<button onclick="loadSettings();" >Load</button>
-	<script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
+	<script src="video.js"></script>
 	<script src="../src/videojs.abLoopPlugin.js"></script>
 
 	<script>
@@ -43,14 +52,13 @@
 			}),
 			videojs("video1",{
 				plugins: {
-					abLoopPlugin: {	start:20,end:25,enabled:true	}
+					//abLoopPlugin: {	start:20,end:25,enabled:true	}
 				}
 			})
 		];
 		
-		//start the first video
-		videos[0].play();
-
+		videos[1].ready(function(){this.abLoopPlugin().setStart(10).setEnd(44).enable().player.play();});
+		
 		var saveSettings = function(player){
 			var t = document.getElementById('data');
 			var a = player.abLoopPlugin;
@@ -61,12 +69,17 @@
 			t.value=JSON.stringify(data);
 		};
 		
-		var loadSettings = function(){
+		var loadSettingsFromJSON = function(json){
+			return loadSettings(JSON.parse(json));
+		}
+		
+		var loadSettings = function(settings,targetPlayer){
+			console.log("loading settings", settings);
 			var t = document.getElementById('data');
-			var data = JSON.parse(t.value);
-			var target = findPlayer(videojs.players, data.source);
-			if (target){
-				var a = target.abLoopPlugin;
+			var data = settings || JSON.parse(t.value);
+			var targetPlayer = targetPlayer || findPlayer(videojs.players, data.source);
+			if (targetPlayer){
+				var a = targetPlayer.abLoopPlugin;
 				a.setOptions(data);
 				a.goToStart().enable().player.play();
 			}
@@ -82,8 +95,49 @@
 			};	
 			return target || false;
 		};
-		
-	</script>;
 
+		//can 
+		var excerpts = excerpts || [];
+		excerpts.push({"start":10.349703,"end":12.301581,"source":"oceans.mp4"});
+		
+		var excerpts = excerpts || [];
+		excerpts.push({"start":20,"end":25,"source":"oceans.mp4"});
+		//[exceprt data='{"start":3,"end":5,"source":'http://blah/test.mp4',"title":"back sacada","tags":["back sacada"] }' /]
+	
+		/* 
+		could add excerpts in text using a shortcode
+		Then add pick list next to videos to show any that are on that video.
+		Or make it possible to view other videos in any player 
+		Perhaps having an "original source" option on the player
+		*/
+		
+		//could use something like this to apply a URL
+		//videos[0].abLoopPlugin.setUrl("#t=11.37,12").enable().goToStart().player.play();
+		
+		//start the first video
+		//videos[0].play();
+		
+		excerpts.forEach(function(e,index){
+			var text = e.source + ' (' + e.start + ' - ' + e.end + ')';
+			var json = JSON.stringify(e);
+			document.write('<br /><button onclick="loadSettings(' + json.replace(/"/g, '&quot;') + ');">' + text + "</button>"); 
+		});
+        var parseTimeStamp = function(timestamp){
+            //if a plain number ,assume seconds
+			if (/^([\d\.]+)$/i.test(timestamp)){return parseFloat(timestamp);}
+			//this assumes a plain whole number is minutes
+            var res = /^((([\d]+)(h|:(?=.*:)))?(([\d]+)(m|:|$))?)?(([\d\.]+)s?)?$/i.exec(timestamp);
+			var d = {
+				match: res[0],
+				hours: res[3] || 0,
+				mins: res[6] || 0,
+				secs: res[9] || 0,
+			};
+            //console.log(d);
+            return parseFloat(d.hours) * 60 * 60 + parseFloat(d.mins) * 60 + parseFloat(d.secs);
+        }		
+		
+	</script>
+	<a href="oceans.mp4#t=10">video</a>
 </body>
 </html>

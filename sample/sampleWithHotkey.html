@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link href="http://vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet">
+	<link href="video-js.css" rel="stylesheet">
 	<title>AB loop test page</title>
 	<style>
 	button.vjs-control.vjs-button.abLoopButton {
@@ -15,15 +15,13 @@
 
 	<video id="video0" class="video-js" controls preload="auto"  width="640" height="264"
 	  poster="http://vjs.zencdn.net/v/oceans.png" data-setup='{"controlBar": { "currentTimeDisplay": true,"muteToggle": false },"fluid": false,"playbackRates": [0.1, 0.2, 0.5, 1, 2, 5]}'>
-		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
-		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
-		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>
-		<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+		<source src="oceans.mp4" type='video/mp4'>
+
 	</video>
 	
 	<br />
 
-	<script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
+	<script src="video.js"></script>
 	<script src="../src/videojs.abLoopPlugin.js"></script>
 	<script src="videojs.hotkeys.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.min.js"></script>
@@ -36,11 +34,12 @@
 
 		//makes details for a custom hotkey
 		var hotKeySpec = function(spec){
-			_.defaultsDeep(spec, {
+			/*_.defaultsDeep(spec, {
 				key:undefined
 				,modifiers: {ctrl:false,shift:false,alt:false, meta:false}
 				,handler: function(player,options){}   // function(player,options){player.doSomething();}
-			});
+			});*/
+			spec.modifiers = spec.modifiers || {};
 			
 			return {
 				key: function(e) {
@@ -91,29 +90,7 @@
 		
 		videos[0].ready(function(){
 
-			this.abLoopPlugin({
-				start:0    //seconds
-				,end:10    //leave out or set to false to loop to end of video
-				,enabled:false
-				,moveToStartIfBeforeStart:true       //allow video to play normally before the loop section?
-				,moveToStartIfAfterEnd:true
-				,pauseOnLoop: false     //if true, after looping video will pause
-				,createButtons: true
-				/*,onOptionsChange: function(opts,api,player){
-					//update button displays if not already done
-					['start','end','enabled','pauseOnLoop'].forEach(function(n){
-						if (opts.changed[n]){
-							if (n=='pauseOnLoop'){n='enabled';}   
-							if (buttonSpecs[n] && buttonSpecs[n].button && buttonSpecs[n].button.updateText){
-								buttonSpecs[n].button.updateText();
-							}
-						}
-					});
-				}*/
-			});
-
-
-			
+			this.abLoopPlugin();
 		
 			this.hotkeys({
 				volumeStep: 0.1,
@@ -131,10 +108,14 @@
 					,vSmallSkipForward: hotKeySpec({key:88,handler:skip(0.5),modifiers:{shift:true}})    
 					,startLoopA: hotKeySpec({key:65,handler:function(p){p.abLoopPlugin.setStart();}})
 					,endLoopB: hotKeySpec({key:66,handler:function(p){p.abLoopPlugin.setEnd();}})
+					,incLoopStart: hotKeySpec({key:65,modifiers:{shift:true},handler:function(p){p.abLoopPlugin.adjustStart(0.1);}})
+					,decLoopStart: hotKeySpec({key:65,modifiers:{ctrl:true},handler:function(p){p.abLoopPlugin.adjustStart(-0.1);}})
+					,incLoopEnd: hotKeySpec({key:66,modifiers:{shift:true},handler:function(p){p.abLoopPlugin.adjustEnd(0.1);}})
+					,decLoopEnd: hotKeySpec({key:66,modifiers:{ctrl:true},handler:function(p){p.abLoopPlugin.adjustEnd(-0.1);}})
 					,enableLoopL:hotKeySpec({key:76,handler:function(p){p.abLoopPlugin.toggle();}})
 					,goToStartKeySqBr:hotKeySpec({key:219,handler:function(p){p.abLoopPlugin.goToStart();}})
 					,goToEndSqBr:hotKeySpec({key:221,handler:function(p){p.abLoopPlugin.goToEnd();}})
-					,togglePauseOnLoopK: hotKeySpec({key:75,handler:function(p){p.abLoopPlugin.togglePauseOnLoop();}})
+					,togglePauseOnLoopK: hotKeySpec({key:75,handler:function(p){p.abLoopPlugin.cyclePauseOnLoopStatus();}})
 				}					
 			});
 		});

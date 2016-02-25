@@ -40,9 +40,16 @@
             });
             return newObject;
         };
-        var formatTimeWithMS = function(seconds){
-            return videojs.formatTime(seconds) + '.' + Math.floor((seconds % 1) * 10);
+        var formatTimeWithMS = function(seconds,decimalPlaces){
+            decimalPlaces = decimalPlaces || 1;
+            
+            return videojs.formatTime(seconds) + '.' + Math.floor((seconds % 1) * Math.pow(10,decimalPlaces));
         };
+        var roundFloat = function(n,decimalPlaces){
+            var f = Math.pow(10,decimalPlaces);
+            return Math.floor(n * f) / f; 
+        }
+        
         var parseTimeStamp = function(timestamp){
             //if a plain number ,assume seconds
 			if (/^([\d\.]+)$/i.test(timestamp)){return parseFloat(timestamp);}
@@ -274,10 +281,10 @@
             var src = player.currentSrc();
             var url = videojs.parseUrl(src);
             var start = (opts.start !== false) ? parseFloat(opts.start) : 0;
-            url.hash = '#' + 't=' + start;
+            url.hash = '#' + 't=' + roundFloat(start,3);
             if(opts.end !==false){
                 var end = parseFloat(opts.end);
-                url.hash += (',' + end);
+                url.hash += (',' + roundFloat(end,3));
             }
             if (spec.returnParsed){
                 return url;

@@ -24,8 +24,8 @@
 
 	First video
 	<video id="video0" class="video-js" controls preload="auto" width="640" height="264" data-setup='"fluid": false,"playbackRates": [0.1, 0.2, 0.5, 1, 2, 5], "inactivityTimeout": 0 }'>
-		<source src="oceans.mp4" type='video/mp4'>
 		<!--
+		<source src="oceans.mp4" type='video/mp4'>
 		<source src="oceans.mp4#t=10,12" type='video/mp4'>
 		-->
 	</video>
@@ -52,12 +52,12 @@
 			}),
 			videojs("video1",{
 				plugins: {
-					//abLoopPlugin: {	start:20,end:25,enabled:true	}
+					abLoopPlugin: {	start:20,end:25,enabled:true	}
 				}
 			})
 		];
 		
-		videos[1].ready(function(){this.abLoopPlugin().setStart(10).setEnd(44).enable().player.play();});
+		//videojs('video1').ready(function(){this.abLoopPlugin().setStart(10).setEnd(44).enable().player.play();});
 		
 		var saveSettings = function(player){
 			var t = document.getElementById('data');
@@ -66,7 +66,8 @@
 			var data = a.getOptions(["start","end"]);
 			data.source	= a.player.currentSrc();
 
-			t.value=JSON.stringify(data);
+			//t.value=JSON.stringify(data);
+			t.value=a.getUrl();
 		};
 		
 		var loadSettingsFromJSON = function(json){
@@ -76,11 +77,13 @@
 		var loadSettings = function(settings,targetPlayer){
 			console.log("loading settings", settings);
 			var t = document.getElementById('data');
-			var data = settings || JSON.parse(t.value);
+			//var data = settings || JSON.parse(t.value);
 			var targetPlayer = targetPlayer || findPlayer(videojs.players, data.source);
+			targetPlayer = videos[1];
 			if (targetPlayer){
 				var a = targetPlayer.abLoopPlugin;
-				a.setOptions(data);
+				a.setUrl(t.value);
+				//a.setOptions(data);
 				a.goToStart().enable().player.play();
 			}
 		};

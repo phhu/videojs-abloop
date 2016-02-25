@@ -1,7 +1,8 @@
 /*
  * Video.js AB loop plugin
  * Adds function to allow looping for a section of a video in video.js player
- *
+ * https://github.com/horsepress/videojs-abloop
+ * MIT licence
  */
 
 ;(function(root, factory) {
@@ -16,7 +17,7 @@
 })(window, function(window, videojs) {
     "use strict";
 
-    var version = "0.3.1";
+    var version = "0.4.0";
     var abLoopPlugin = function (initialOptions) {
 
         //get reference to player
@@ -40,30 +41,36 @@
             });
             return newObject;
         };
+        //adds decimals to videojs's format time function
         var formatTimeWithMS = function(seconds,decimalPlaces){
             decimalPlaces = decimalPlaces || 1;
-            
             return videojs.formatTime(seconds) + '.' + Math.floor((seconds % 1) * Math.pow(10,decimalPlaces));
         };
         var roundFloat = function(n,decimalPlaces){
             var f = Math.pow(10,decimalPlaces);
             return Math.floor(n * f) / f; 
-        }
+        };
         
+        //this converts a timestamp (1h23, 1:23:33, 1m30s etc) to a number of seconds
         var parseTimeStamp = function(timestamp){
+            if (timestamp === undefined){return undefined;}
             //if a plain number ,assume seconds
-			if (/^([\d\.]+)$/i.test(timestamp)){return parseFloat(timestamp);}
+            if (isNumber(timestamp)){return timestamp;}
+			if (/^([+\-])?([\d\.]+)$/i.test(timestamp)){return parseFloat(timestamp);}
 			//this assumes a plain whole number is minutes
-            var res = /^((([\d]+)(h|:(?=.*:)))?(([\d]+)(m|:|$))?)?(([\d\.]+)s?)?$/i.exec(timestamp);
-			var d = {
+            var res = /^([+\-])?((([\d]+)(h|:(?=.*:)))?(([\d]+)(m|:|$))?)?(([\d\.]+)s?)?$/i.exec(timestamp);
+			if (!res){return null;}
+            var d = {
 				match: res[0],
-				hours: res[3] || 0,
-				mins: res[6] || 0,
-				secs: res[9] || 0,
+                sign: res[1],
+				hours: res[4] || 0,
+				mins: res[7] || 0,
+				secs: res[10] || 0
 			};
-            //console.log(d);
-            return parseFloat(d.hours) * 60 * 60 + parseFloat(d.mins) * 60 + parseFloat(d.secs);
-        }
+            var multiplier = (d.sign == '-') ? -1 : 1;
+            var totSecs = parseFloat(d.hours) * 60 * 60 + parseFloat(d.mins) * 60 + parseFloat(d.secs);
+            return isNumber(totSecs) ? multiplier * totSecs : null;
+        };
         
         //contains options, allowing them to be set at runtime
         var opts = {};
@@ -80,12 +87,12 @@
             ,'end':{
                 "default":false
                 ,"validate":function(x){
-                    if (x===false){return x;}
+                    if (x===false){return x;}           //allow false values to mean loop til end
                     if (isNumber(x)){
                         var duration = player.duration();
-                        if (duration === undefined || duration === 0){
+                        if (duration === undefined || duration === 0){  //duration unknown
                             if ( x>= 0 ){return x;}
-                        } else {
+                        } else {        //we know the duration
                             if ( x>= 0 && x <= duration){
                                 return x;
                             } else if ( x> duration){
@@ -100,26 +107,27 @@
                 "default":false
                 ,"validate":toBoolean
             }
-            ,'moveToStartIfBeforeStart':{
+            ,'loopIfBeforeStart':{
                 "default":true
                 ,"validate":toBoolean
             }
-            ,'moveToStartIfAfterEnd':{
+            ,'loopIfAfterEnd':{
                 "default":true
                 ,"validate":toBoolean
             }
-            ,'pauseBeforeLoop':{
+            ,'pauseBeforeLooping':{
                 "default":false
                 ,"validate":toBoolean
             }
-            ,'pauseAfterLoop':{
+            ,'pauseAfterLooping':{
                 "default":false
                 ,"validate":toBoolean
             }
-            ,'createButtons':{
+            //it's easier not to treat this as an option, as can't remove buttons once created
+            /*,'createButtons':{
                 "default":true
                 ,"validate":toBoolean
-            }
+            }*/
         };
 
         //callbacks can be included in initial options, but are not treated as options
@@ -154,9 +162,8 @@
             callBackNames.forEach(setToDefault(callBackSpecs));
         };
 
+        //assign bound copies of the callbacks to the api
         var setCallBacksToInitialOptions = function(){
-
-            //assign bound copies of the callbacks to the api
             callBackNames.forEach(function(callBackName){
                 if (callBackSpecs[callBackName].check(initialOptions[callBackName])){
                     api[callBackName] = initialOptions[callBackName].bind(api);
@@ -194,7 +201,7 @@
         var goToStartOfLoop = function(checkPause){
 
             if (checkPause){
-                if (opts.pauseBeforeLoop && alreadyPausedBeforeLoop === false){
+                if (opts.pauseBeforeLooping && alreadyPausedBeforeLoop === false){
                     player.pause();
                     alreadyPausedBeforeLoop = true;
                 } else {
@@ -206,7 +213,7 @@
                     if (callBackSpecs.onLoopCallBack.check(api.onLoopCallBack)){
                         api.onLoopCallBack(api,player);
                     }
-                    if (opts.pauseAfterLoop){
+                    if (opts.pauseAfterLooping){
                         player.pause();
                     }
 
@@ -223,28 +230,32 @@
             player.currentTime(opts.end);
             return api;
         };
-        var setStartOfLoop = function(time){
-            time = (time === undefined) ? player.currentTime() : time;
-            opts.start = time;
-            return api;
+
+        var timeSetter = function(optName){
+            return function(time){
+                if (time === false){
+                    opts[optName] = false;
+                } else {
+                    if(time !== undefined){time = parseTimeStamp(time);}
+                    if (time !==null){
+                        time = (time === undefined) ? player.currentTime() : time;
+                        opts[optName] = time;
+                    }
+                }
+                return api;
+            };
         };
-        var setEndOfLoop = function(time){
-            time = (time === undefined) ? player.currentTime() : time;
-            opts.end = time;
-            return api;
+        
+        var timeAdjuster = function(optName){
+            return function(adjustment){
+                adjustment = parseTimeStamp(adjustment);
+                if (isNumber(adjustment)){
+                    opts[optName] += adjustment;
+                }
+                return api;
+            };        
         };
-        var adjustEndOfLoop = function(adjustment){
-            if (isNumber(adjustment)){
-                opts.end += adjustment;
-            }
-            return api;
-        };
-        var adjustStartOfLoop = function(adjustment){
-            if (isNumber(adjustment)){
-                opts.start += adjustment;
-            }
-            return api;
-        };
+        
         var enableLoop = function(){
             opts.enabled = true;
             return api;
@@ -253,16 +264,16 @@
             opts.enabled = false;
             return api;
         };
-        var cyclePauseOnLoopStatus = function(){
-            var after = opts.pauseAfterLoop, before = opts.pauseBeforeLoop;
+        var cyclePauseOnLooping = function(){
+            var after = opts.pauseAfterLooping, before = opts.pauseBeforeLooping;
             if (!after && !before){
-                setOptions({pauseAfterLoop:true,pauseBeforeLoop:false});
+                setOptions({pauseAfterLooping:true,pauseBeforeLooping:false});
             } else if (after && !before){
-                setOptions({pauseAfterLoop:false,pauseBeforeLoop:true});
+                setOptions({pauseAfterLooping:false,pauseBeforeLooping:true});
             } else if (!after && before){
-                setOptions({pauseAfterLoop:true,pauseBeforeLoop:true});
+                setOptions({pauseAfterLooping:true,pauseBeforeLooping:true});
             } else {
-                setOptions({pauseAfterLoop:false,pauseBeforeLoop:false});
+                setOptions({pauseAfterLooping:false,pauseBeforeLooping:false});
             }
         };
 
@@ -274,60 +285,73 @@
             };
         };
 
-        //get a URL with a hash to identify the looping section
-        var getUrl = function(spec){
+        
+        var getUrlHash = function(spec){
             spec = spec || {};
-            validateOptions();
-            var src = player.currentSrc();
-            var url = videojs.parseUrl(src);
+            spec.decimalPlaces = Math.floor(spec.decimalPlaces) || 3;
+            
+            //validateOptions();
+            
             var start = (opts.start !== false) ? parseFloat(opts.start) : 0;
-            url.hash = '#' + 't=' + roundFloat(start,3);
+            var hash =  '#' + 't=' + roundFloat(start,spec.decimalPlaces);
+            
             if(opts.end !==false){
                 var end = parseFloat(opts.end);
-                url.hash += (',' + roundFloat(end,3));
+                hash += (',' + roundFloat(end,spec.decimalPlaces));
             }
-            if (spec.returnParsed){
-                return url;
-            } else {
-                return src.replace(/#[^#]*$/,'') + url.hash;
-            }
+            return hash;
+            
         };
         
-        //apply a url, typically with a hash to identify a section to loop
-        var setUrl = function(spec){
-            if (typeof spec === 'string'){spec = {urlString: spec}}
-            spec = spec || {urlString: spec};
-            spec.overwriteSrc = spec.overwriteSrc || false;
-            //spec.play = spec.play || false;
-            spec.urlString = spec.urlString || undefined;
-            spec.urlObject = spec.urlObject || undefined;
+        //get a URL with a hash to identify the looping section
+        var getUrlWithHash = function(spec){
+            spec = spec || {};
             
-            var url = spec.urlObject || videojs.parseUrl(spec.urlString);
-            var hash = url.hash;
-            var start = hash.replace(/^#t=([^,]*)(,.*)?$/,'$1');
-            var end = hash.replace(/^#t=([^,]*)(,([\d\.]+))?$/,'$3');
-           // console.log("end:",end);
-            opts.start = isNumber(start) ? parseFloat(start): false;
-            opts.end  = isNumber(end) ? parseFloat(end) : false;
-            //if (isNumber(start)){opts.enabled = true;}
+            var src = player.currentSrc();
+            return src + getUrlHash(spec);
             
-            if(spec.overwriteSrc){
-                var curSrc = player.currentSrc();
-                if (curSrc !== spec.urlString){
-                    var newSrc = spec.urlString.replace(/#.*$/,'');
-                    player.src(newSrc);
-                    //console.log("replacing URL " + curSrc + " with " + newSrc);
-                    //console.log("currentSrc now: " + player.currentSrc());
-                }
+        };
+        var applyUrlHash = function(url){
+            
+            //allow to pass in a string or an object with hash property
+            if (typeof url === 'string'){
+                url = videojs.parseUrl(url);
             }
-            //if(spec.play){goToStartOfLoop();player.play();}
-            
+            if (url.hash){
+                //extract out the start and end times
+                var start = url.hash.replace(/^#t=([^,]*)(,.*)?$/,'$1');
+                var end = url.hash.replace(/^#t=([^,]*)(,([\d\.]+))?$/,'$3');
+                
+                //normally only seconds are allowed, but allow 1m20s etc
+                start = parseTimeStamp(start);
+                end = parseTimeStamp(end);
+                
+                if (isNumber(start)){opts.start =  parseFloat(start);}
+                if (isNumber(end)){opts.end =  parseFloat(end);}         
+            }
+            return api;
+        };       
+        //apply a url, typically with a hash to identify a section to loop
+        var applyUrl = function(url){
+           
+            //could use videojs.parseUrl, but regexping is less hassle
+            var urlWithoutHash = url.replace(/^(.*?)(#.*)?$/,'$1');
+            var urlHash = url.replace(/^(.*?)(#.*)?$/,'$2');
+                     
+            //check if we need to update the source          
+            var curSrc = player.currentSrc();
+            if (!(curSrc == urlWithoutHash || curSrc == url || url == urlHash )){
+                player.src(urlWithoutHash);
+            }
+            //apply hash if there is one
+            if (urlHash){
+                applyUrlHash(urlHash);
+            }
             
             return api;
                             
         };
 
-        
         var getOptions = function(optionsToReturn){
 
             var retOpts = optionsToReturn;
@@ -378,39 +402,56 @@
             };
         };
 
-        //check if we need to go to start of loop
-        var endLoopRequired = false;
-        
-        var checkABLoop = function(e){
-            var curTime,endTime,startTime, duration;
-            if (!opts.enabled){return false;}   //don't check if not enabled
-            if (player.paused()){return false;}   //don't check if paused
+        var endLoopRequired = false;    //flag set to true if looping around end of video is requierd (where start > end)
+        //given the current player state and options, should we loop?
+        var loopRequired = function(){
+            var curTime,endTime,startTime;
 
             validateOptions();
+            
             curTime = player.currentTime();
-            duration = player.duration();
-            endTime = (opts.end === false) ? duration : opts.end;
-            startTime = (opts.start === false) ? 0 : opts.start;
-   
-            endLoopRequired = false;
-            if (startTime === endTime){
-                player.pause();                //to save contant looping behaviour
-            } else if (startTime > endTime){
+            endTime = getEndTime();
+            startTime = getStartTime();
+    
+            if (startTime > endTime){
                 endLoopRequired = true;
                 //if the end is before the start, deal with it
-                if (curTime < startTime && curTime > endTime && ((curTime - endTime) < 1 || opts.moveToStartIfAfterEnd ||opts.moveToStartIfBeforeStart)){
-                    goToStartOfLoop(true);
+                if (curTime < startTime && curTime > endTime && ((curTime - endTime) < 1 || opts.loopIfAfterEnd ||opts.loopIfBeforeStart)){
+                    return true;
+                } else {
+                    return false;
                 }
-            } else if (curTime < startTime && opts.moveToStartIfBeforeStart){
-                goToStartOfLoop(true);
-            } else if (curTime >= endTime){
-                //use a margin of one just in case time has skipped a bit past
-                if ((curTime - endTime) < 1 || opts.moveToStartIfAfterEnd){
-                    goToStartOfLoop(true);
+            } else {   //startTime <= endTime
+                endLoopRequired = false;
+                if (curTime < startTime && opts.loopIfBeforeStart){
+                    return true;
+                } else if (curTime >= endTime){
+                    //use a margin of one just in case time has skipped a bit past
+                    if ((curTime - endTime) < 1 || opts.loopIfAfterEnd){
+                        return true;
+                    }
                 }
             }
+            
+            return false;
 
-            //return false;
+        };       
+        
+        var getStartTime = function(){
+            return (opts.start === false) ? 0 : opts.start;
+        };
+        var getEndTime = function(){
+            return (opts.end === false) ? player.duration() : opts.end;
+        };      
+        //function run on time update by player
+        var checkABLoop = function(e){
+            if (opts.enabled && !player.paused() && loopRequired()){
+                //prevents constant looping          
+                if (getStartTime() === getEndTime()){ 
+                    player.pause();  
+                }
+                goToStartOfLoop(true);
+            }
         };
 
         // BUTTON THINGS
@@ -434,15 +475,15 @@
             }
             ,{
                 'name':'enabled'
-                ,'optionsUsed':['enabled','pauseAfterLoop','pauseBeforeLoop']
+                ,'optionsUsed':['enabled','pauseAfterLooping','pauseBeforeLooping']
                 ,'leftclick':function(api){api.toggle();}
-                ,'rightclick':function(api){api.cyclePauseOnLoopStatus();}
+                ,'rightclick':function(api){api.cyclePauseOnLooping();}
                 ,'defaultText':'Loop'
                 ,'textFunction':function(opts){
                     if (opts.enabled){
-                        if (opts.pauseBeforeLoop && opts.pauseAfterLoop){return 'PAUSE LOOP PAUSE';}
-                        if (opts.pauseAfterLoop){return 'LOOP& PAUSE';}
-                        if (opts.pauseBeforeLoop){return 'PAUSE &LOOP';}
+                        if (opts.pauseBeforeLooping && opts.pauseAfterLooping){return 'PAUSE LOOP PAUSE';}
+                        if (opts.pauseAfterLooping){return 'LOOP& PAUSE';}
+                        if (opts.pauseBeforeLooping){return 'PAUSE &LOOP';}
                         return  'LOOP ON';
                     } else {
                         return  'Loop off';
@@ -527,20 +568,23 @@
             ,getOptions: getOptions
             ,goToStart: goToStartOfLoop
             ,goToEnd: goToEndOfLoop
-            ,setStart: notify(setStartOfLoop,{'start':true})
-            ,setEnd:  notify(setEndOfLoop,{'end':true})
-            ,adjustStart:  notify(adjustStartOfLoop,{'start':true})
-            ,adjustEnd:  notify(adjustEndOfLoop,{'end':true})
+            ,setStart: notify(timeSetter('start'),{'start':true})
+            ,setEnd:  notify(timeSetter('end'),{'end':true})
+            ,adjustStart:  notify(timeAdjuster('start'),{'start':true})
+            ,adjustEnd:  notify(timeAdjuster('end'),{'end':true})
             ,enable:  notify(enableLoop,{'enabled':true})
             ,disable:  notify(disableLoop,{'enabled':true})
             ,toggle: notify(toggler('enabled'),{'enabled':true})
-            ,togglePauseAfterLoop: notify(toggler('pauseAfterLoop'),{'pauseAfterLoop':true})
-            ,togglePauseBeforeLoop: notify(toggler('pauseBeforeLoop'),{'pauseBeforeLoop':true})
-            ,cyclePauseOnLoopStatus: notify(cyclePauseOnLoopStatus,{'pauseBeforeLoop':true,'pauseAfterLoop':true})
+            ,togglePauseAfterLooping: notify(toggler('pauseAfterLooping'),{'pauseAfterLooping':true})
+            ,togglePauseBeforeLooping: notify(toggler('pauseBeforeLooping'),{'pauseBeforeLooping':true})
+            ,cyclePauseOnLooping: notify(cyclePauseOnLooping,{'pauseBeforeLooping':true,'pauseAfterLooping':true})
             ,player: player
             ,version: version
-            ,getUrl: getUrl
-            ,setUrl: notify(setUrl,{'start':true,'end':true,'enabled':true})
+            ,getUrl: getUrlWithHash
+            ,getUrlFragment : getUrlHash
+            ,applyUrl : notify(applyUrl,{'start':true,'end':true})
+            ,applyUrlFragment : notify(applyUrlHash,{'start':true,'end':true})
+            ,loopRequired: loopRequired                 //allows testing of conditions via API when player is paused
         };
 
         //set up the plugin
@@ -553,20 +597,20 @@
             //set options to initial options and notify of change
             notify(setOptionsToInitialOptions)();
 
-            //create buttons once the player is ready
-            if (initialOptions.createButtons){
-                player.ready(function(){
+            player.ready(function(){
+                //create buttons once the player is ready
+                if (initialOptions.createButtons != false){
                     createButtons(buttonSpecs);
-                    
-                    //if start time is greater than end, the video needs to loop on ending
-                    player.on('ended',function(){
-                        if(endLoopRequired && !player.loop() && opts.enabled){
-                            player.play();
-                        }
-                    });
-                    
-                });
-            }
+                }    
+                //if start time is greater than end, the video needs to loop on ending
+                //this is indicated by the endLoopRequired flag 
+                player.on('ended',function(){
+                    if(endLoopRequired && !player.loop() && opts.enabled){
+                        player.play();
+                    }
+                });   
+            });
+            
 
             //this replaces the reference created to this function on each player object
             //with a reference to the api object (created once per invocation of this function)

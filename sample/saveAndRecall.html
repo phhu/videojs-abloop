@@ -82,7 +82,7 @@
 			targetPlayer = videos[1];
 			if (targetPlayer){
 				var a = targetPlayer.abLoopPlugin;
-				a.setUrl(t.value);
+				a.applyUrl(t.value);
 				//a.setOptions(data);
 				a.goToStart().enable().player.play();
 			}
@@ -125,21 +125,7 @@
 			var json = JSON.stringify(e);
 			document.write('<br /><button onclick="loadSettings(' + json.replace(/"/g, '&quot;') + ');">' + text + "</button>"); 
 		});
-        var parseTimeStamp = function(timestamp){
-            //if a plain number ,assume seconds
-			if (/^([\d\.]+)$/i.test(timestamp)){return parseFloat(timestamp);}
-			//this assumes a plain whole number is minutes
-            var res = /^((([\d]+)(h|:(?=.*:)))?(([\d]+)(m|:|$))?)?(([\d\.]+)s?)?$/i.exec(timestamp);
-			var d = {
-				match: res[0],
-				hours: res[3] || 0,
-				mins: res[6] || 0,
-				secs: res[9] || 0,
-			};
-            //console.log(d);
-            return parseFloat(d.hours) * 60 * 60 + parseFloat(d.mins) * 60 + parseFloat(d.secs);
-        }		
-		
+
 	</script>
 	<a href="oceans.mp4#t=10">video</a>
 </body>

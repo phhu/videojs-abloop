@@ -279,6 +279,7 @@
             } else {
                 setOptions({pauseAfterLooping:false,pauseBeforeLooping:false});
             }
+            return api;
         };
 
         //return a function to toggle an option

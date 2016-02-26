@@ -1,0 +1,22 @@
+{
+  "name": "videojs-abloop",
+  "version": "0.4.0",
+  "description": "A video.js plugin allowing looping of a section of video",
+  "main": "videojs-abloop.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/horsepress/videojs-abloop.git"
+  },
+  "keywords": [
+    "videojs-plugin"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/horsepress/videojs-abloop/issues"
+  },
+  "homepage": "https://github.com/horsepress/videojs-abloop#readme"
+}

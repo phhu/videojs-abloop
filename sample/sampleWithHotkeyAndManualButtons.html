@@ -24,7 +24,7 @@
 	<br />
 
 	<script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
-	<script src="../src/videojs.abLoopPlugin.js"></script>
+	<script src="../videojs-abLoop.js"></script>
 	<script src="videojs.hotkeys.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.min.js"></script>
 
@@ -118,13 +118,14 @@
 				start:5    //seconds
 				,end:10    //leave out or set to false to loop to end of video
 				,enabled:false
-				,moveToStartIfBeforeStart:true       //allow video to play normally before the loop section?
-				,moveToStartIfAfterEnd:true
-				,pauseOnLoop: false     //if true, after looping video will pause
+				,loopIfBeforeStart:true       //allow video to play normally before the loop section?
+				,loopIfAfterEnd:true
+				,pauseAfterLoop: false     //if true, after looping video will pause
+				,pauseBeforeLoop: false     //if true, after looping video will pause
 				,createButtons: false
 				,onOptionsChange: function(opts,api,player){
 					//update button displays if not already done
-					['start','end','enabled','pauseOnLoop'].forEach(function(n){
+					['start','end','enabled','pauseBeforeLoop'].forEach(function(n){
 						if (opts.changed[n]){
 							if (n=='pauseOnLoop'){n='enabled';}   
 							if (buttonSpecs[n] && buttonSpecs[n].button && buttonSpecs[n].button.updateText){

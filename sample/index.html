@@ -29,7 +29,7 @@
 	</video>
 
 	<script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
-	<script src="../src/videojs.abLoopPlugin.js"></script>
+	<script src="../videojs.abLoopPlugin.js"></script>
 
 	<script>
 		var videos;
@@ -39,12 +39,13 @@
 				plugins: {
 					abLoopPlugin: {
 						start:0    //seconds
-						,end:10    //leave out or set to false to loop to end of video
+						,end:5   //leave out or set to false to loop to end of video
 						,enabled:false
-						,moveToStartIfBeforeStart:false       //allow video to play normally before the loop section?
-						,moveToStartIfAfterEnd:true
+						,loopIfBeforeStart:false       //allow video to play normally before the loop section?
+						,loopIfAfterEnd:true
 						,pauseOnLoop: false     //if true, after looping video will pause
 						,createButtons: true
+						,onOptionsChange: function(optionDetails,api,player){console.log("options changed: ", optionDetails);}
 					}
 				}
 			}),
@@ -67,7 +68,7 @@
 		videos[0].abLoopPlugin.onLoopCallBack = function(plugin,player){
 			var opts = this.getOptions();
 			console.log("Looping back to %s sec on %s",opts.start, this.player.currentSrc() );
-			plugin.setOptions({pauseOnLoop:true}); 
+			plugin.setOptions({pauseAfterLooping:true}); 
 		};
 
 		//set properties dynamically

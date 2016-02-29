@@ -6,7 +6,6 @@
  */
 
 ;(function(root, factory) {
-  "use strict";
   if (typeof define === 'function' && define.amd) {
     define([], factory.bind(this, root, root.videojs));
   } else if (typeof module !== 'undefined' && module.exports) {
@@ -333,6 +332,7 @@
             spec = spec || {};
             
             var src = player.currentSrc();
+            if (src.src){src = src.src;}
             var url = src + getUrlHash(spec);
             
             return url;
@@ -347,11 +347,11 @@
             }
             if (url.hash){
                 //extract out the start and end times
-                var re = /^#t=([^,]*)(,(.*))?$/;
-                var start = url.hash.replace(re,'$1');
-                var end =   url.hash.replace(re,'$3');
+                var re = /^(#?t=)?([^,]*)(,(.*))?$/;
+                var start = url.hash.replace(re,'$2');
+                var end =   url.hash.replace(re,'$4');
 
-                //normally only seconds are allowed, but allow 1m20s etc
+                //normally only seconds or hh:mm:ss are allowed, but allow 1m20s etc
                 start = parseTimeStamp(start);
                 end = parseTimeStamp(end);
 
@@ -432,7 +432,7 @@
             };
         };
 
-        var endLoopRequired = false;    //flag set to true if looping around end of video is requierd (where start > end)
+        var loopAtEndOfVideoRequired = false;    //flag set to true if looping around end of video is requierd (where start > end)
         //given the current player state and options, should we loop?
         var loopRequired = function(){
             var curTime,endTime,startTime;
@@ -444,13 +444,13 @@
             startTime = getStartTime();
 
             if (startTime > endTime){
-                endLoopRequired = true;
+                loopAtEndOfVideoRequired = true;
                 //if the end is before the start, deal with it
                 if (curTime < startTime && curTime > endTime && ((curTime - endTime) < 1 || opts.loopIfAfterEnd ||opts.loopIfBeforeStart)){
                     return true;
                 }
             } else {   //startTime <= endTime
-                endLoopRequired = false;
+                loopAtEndOfVideoRequired = false;
                 if (curTime < startTime && opts.loopIfBeforeStart){
                     return true;
                 } else if (curTime >= endTime){
@@ -471,17 +471,23 @@
         var getEndTime = function(){
             return (opts.end === false) ? player.duration() : opts.end;
         };
+        var isLooping = false;
+        var minLoopLength = (isNumber(initialOptions.minLoopLength) && initialOptions.minLoopLength > 0) ? initialOptions.minLoopLength : 50;
         //function run on time update by player
         var checkABLoop = function(e){
-            if (opts.enabled && !player.paused() && loopRequired()){
+            if (!isLooping && opts.enabled && !player.paused() && loopRequired()){
                 //prevents constant looping
-                if (getStartTime() === getEndTime()){
+                /*if (getStartTime() === getEndTime()){
                     player.pause();
-                }
+                }*/
+                //prevent looping happening to quickly in succession
+                //this effectively sets a minimum loop time
+                //if start time and end time are the same, we would get a loop of this length
+                isLooping = true;
+                setTimeout(function(){ isLooping=false; }, minLoopLength); 
                 goToStartOfLoop(true);
             }
         };
-
         // BUTTON THINGS
         var buttons = {};    //holds references to the button objects
 
@@ -521,12 +527,18 @@
                 ,'optionsUsed':['enabled','pauseAfterLooping','pauseBeforeLooping']
                 ,'leftclick':function(api,event){api.toggle();}
                 ,'rightclick':function(api,event){
-                    if (event.ctrlKey && window && window.prompt){
-                        window.prompt("Copy to clipboard: Ctrl+C, Enter", api.getAbsoluteUrl());
-                    } else if (event.altKey && window && window.prompt){
-                        window.prompt("Copy to clipboard: Ctrl+C, Enter", api.getUrl());
-                    } else if (event.shiftKey && window && window.prompt){
-                        window.prompt("Copy to clipboard: Ctrl+C, Enter", api.getUrlFragment());
+                    var msg;
+                    if (window && window.prompt){
+                        if (event.ctrlKey)      {
+                            msg = api.getAbsoluteUrl();
+                        } else if (event.altKey)  {
+                            msg = api.getUrl();
+                        } else if (event.shiftKey){
+                            msg = api.getUrlFragment();
+                        }
+                    }
+                    if (msg){
+                        clipboardPrompt(msg);
                     } else {
                         api.cyclePauseOnLooping();
                     }
@@ -544,7 +556,11 @@
                 }
             }
         ];
-
+        var clipboardPrompt = function(msg){
+            if (window && window.prompt){
+                window.prompt("Copy to clipboard: Ctrl+C, Enter",msg);
+            }
+        }
         var createButton = function(spec,player){
             //returns a function which handles button clicks,
             var clickFunction = function(abLoopCall,whichButton){
@@ -657,14 +673,13 @@
                     createButtons(buttonSpecs);
                 }
                 //if start time is greater than end, the video needs to loop on ending
-                //this is indicated by the endLoopRequired flag
+                //this is indicated by the loopAtEndOfVideoRequired flag
                 player.on('ended',function(){
-                    if(endLoopRequired && opts.enabled && !player.loop() ){
+                    if(loopAtEndOfVideoRequired && opts.enabled && !player.loop() ){
                         player.play();
                     }
                 });
             });
-
 
             //this replaces the reference created to this function on each player object
             //with a reference to the api object (created once per invocation of this function)
@@ -683,6 +698,6 @@
 
     abLoopPlugin.loaded  = false;
     abLoopPlugin.VERSION = version;
-    return videojs.plugin('abLoopPlugin', abLoopPlugin);
+    videojs.plugin('abLoopPlugin', abLoopPlugin);
 
 });

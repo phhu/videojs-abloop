@@ -4,7 +4,7 @@
   "description": "A video.js plugin allowing looping of a section of video",
   "main": "videojs-abloop.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,12 @@
   "bugs": {
     "url": "https://github.com/horsepress/videojs-abloop/issues"
   },
-  "homepage": "https://github.com/horsepress/videojs-abloop#readme"
+  "homepage": "https://github.com/horsepress/videojs-abloop#readme",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.2.0",
+    "mocha": "^2.4.5",
+    "node-static": "^0.7.7",
+    "selenium-webdriver": "^2.52.0"
+  }
 }

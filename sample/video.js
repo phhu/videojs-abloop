@@ -5320,7 +5320,8 @@ var PlaybackRateMenuButton = (function (_MenuButton) {
 
   PlaybackRateMenuButton.prototype.updateLabel = function updateLabel() {
     if (this.playbackRateSupported()) {
-      this.labelEl_.innerHTML = this.player().playbackRate() + 'x';
+        console.log(this.player().playbackRate());
+      this.labelEl_.innerHTML = (this.player().playbackRate()) + 'x';
     }
   };
 

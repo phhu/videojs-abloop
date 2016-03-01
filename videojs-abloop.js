@@ -259,6 +259,13 @@
             };
         };
 
+        var playLoop = function() {
+            validateOptions();
+            goToStartOfLoop(false);
+            enableLoop();
+            player.play();
+        }
+        
         var enableLoop = function(){
             opts.enabled = true;
             return api;
@@ -654,7 +661,9 @@
             ,getUrlFragment : getUrlHash
             ,applyUrl : notify(applyUrl,{'start':true,'end':true})
             ,applyUrlFragment : notify(applyUrlHash,{'start':true,'end':true})
-            ,loopRequired: loopRequired                 //allows testing of conditions via API when player is paused
+            ,loopRequired: loopRequired                 //allows testing of conditions via API 
+            when player is paused
+            ,playLoop: playLoop
         };
 
         //set up the plugin

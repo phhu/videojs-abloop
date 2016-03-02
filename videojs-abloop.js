@@ -232,7 +232,7 @@
             return api;
         };
 
-        //makes a function to set a time dimesion (start,end)
+        //makes a function to set a time option (start,end)
         var timeSetter = function(optName){
             return function(time){
                 if (time === false){
@@ -248,7 +248,7 @@
             };
         };
 
-        //makes a function to change a time dimension
+        //makes a function to change a time option
         var timeAdjuster = function(optName){
             return function(adjustment){
                 adjustment = parseTimeStamp(adjustment);
@@ -264,11 +264,7 @@
             goToStartOfLoop(false);
             enableLoop();
             player.play();
-<<<<<<< HEAD
         };
-=======
-        }
->>>>>>> origin/master
         
         var enableLoop = function(){
             opts.enabled = true;
@@ -666,7 +662,7 @@
             ,applyUrl : notify(applyUrl,{'start':true,'end':true})
             ,applyUrlFragment : notify(applyUrlHash,{'start':true,'end':true})
             ,loopRequired: loopRequired                 //allows testing of conditions via API when player is paused
-            ,playLoop: playLoop
+            ,playLoop: notify(playLoop)
         };
 
         //set up the plugin

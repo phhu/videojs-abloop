@@ -264,7 +264,11 @@
             goToStartOfLoop(false);
             enableLoop();
             player.play();
+<<<<<<< HEAD
         };
+=======
+        }
+>>>>>>> origin/master
         
         var enableLoop = function(){
             opts.enabled = true;
@@ -661,8 +665,7 @@
             ,getUrlFragment : getUrlHash
             ,applyUrl : notify(applyUrl,{'start':true,'end':true})
             ,applyUrlFragment : notify(applyUrlHash,{'start':true,'end':true})
-            ,loopRequired: loopRequired                 //allows testing of conditions via API 
-            when player is paused
+            ,loopRequired: loopRequired                 //allows testing of conditions via API when player is paused
             ,playLoop: playLoop
         };
 

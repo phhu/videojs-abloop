@@ -51,18 +51,19 @@ setOptions(optionsObject): e.g. setOptions({"start":40,"end":45"}). Options not 
 getOptions(optionsObject?): e.g. getOptions(["start","end"]). Call without an argument to get them all.
 goToStart(): set player currentTime to start time
 goToEnd():
-setStart(startTime): e.g. startTime(30), startTime("0:34:23")
+setStart(startTime): e.g. startTime(30), startTime("0:34:23"). Call startTime() to set the startTime to the player's currentTime 
 setEnd(endTime):  
-adjustStart(adjustmentInSec): e.g. adjustStart(-5)
+adjustStart(adjustmentInSec): e.g. adjustStart(-5). adjustStart("1m30s") or adjustStart("1:20:30") also work 
 adjustEnd(adjustmentInSec): 
 enable(): enable the plugin.
 disable(): 
-toggle(): 
+toggle(): change enabled status
 togglePauseAfterLooping(): 
 togglePauseBeforeLooping(): 
 cyclePauseOnLooping(): cycle between four different compinations of settings for pausing on looping
 validateOptions(): set options to valid values if they are not already. This is called every time the loop condition is checked anyway, but you might want to use it manually if setting options while the player is paused or the plugin disabled
 resetToInitialOptions: reset options to the ones provided on setup
+playLoop(): for convenience, plays the loop from its start. Equivalent to abLoopPlugin.validateOptions().goToStart().enable().player.play()
 player: reference to parent player object. e.g. video.abLoopPlugin.enable().player.play()
 version: version number
 getAbsoluteUrl()

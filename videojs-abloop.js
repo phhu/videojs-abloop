@@ -264,13 +264,9 @@
             goToStartOfLoop(false);
             enableLoop();
             player.play();
-<<<<<<< HEAD
         };
-=======
-        }
->>>>>>> origin/master
-        
-        var enableLoop = function(){
+
+	var enableLoop = function(){
             opts.enabled = true;
             return api;
         };

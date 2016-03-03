@@ -5,6 +5,7 @@
   "main": "videojs-abloop.js",
   "scripts": {
     "test": "mocha"
+    ,"min": "uglifyjs videojs-abloop.js --compress --mangle -o dist/videojs-abloop.min.js"
   },
   "repository": {
     "type": "git",

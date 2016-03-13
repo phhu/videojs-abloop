@@ -22,7 +22,7 @@ describe('videojs-abloop', function() {
 
     //Open website and wait until abloop plugin loaded
     before(function(done) {
-        this.timeout(15000);
+        this.timeout(30000);
 
         this.driver = new selenium.Builder().
             withCapabilities(selenium.Capabilities.firefox()).

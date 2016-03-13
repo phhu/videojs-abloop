@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link href="http://vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet">
+	<link href="video-js.css" rel="stylesheet">  <!-- http://vjs.zencdn.net/5.6.0/ -->
+	<link href="video-js-extra.css" rel="stylesheet">
 	<title>AB loop test page</title>
 </head>
 
 <body id="body">
 	<h2>AB loop test page</h2>
-
+<!-- data-setup='{ "controlBar": { "children": { "volumeMenuButton": { "volumeBar": { "vertical": true } }, "muteToggle": false, "volumeControl": false }}} -->
 	First video: should play automatically from start, then loop once between 2 and 8 seconds before pausing
 	<video id="video0" class="video-js" controls preload="auto"  width="640" height="264"
-	  poster="http://vjs.zencdn.net/v/oceans.png">
+	  poster="http://vjs.zencdn.net/v/oceans.png" >
 		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
 		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
 		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>

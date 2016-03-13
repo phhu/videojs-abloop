@@ -1,0 +1,11 @@
+/* display current time rather than time remaining */
+
+.vjs-current-time {  display: inline  !important;}
+.vjs-remaining-time {  display: none  !important;}
+
+/* always show control bar */
+.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar{
+	visibility:visible  !important;
+	opacity:1  !important;
+	
+}

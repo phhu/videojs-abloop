@@ -7663,9 +7663,8 @@ var VolumeMenuButton = (function (_PopupButton) {
 
     // Default to inline
     if (options.inline === undefined) {
-      options.inline = true;
+      options.inline =false;
     }
-
     // If the vertical option isn't passed at all, default to true.
     if (options.vertical === undefined) {
       // If an inline volumeMenuButton is used, we should default to using

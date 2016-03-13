@@ -1,6 +1,6 @@
 {
   "name": "videojs-abloop",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A video.js plugin allowing looping of a section of video",
   "main": "videojs-abloop.js",
   "scripts": {

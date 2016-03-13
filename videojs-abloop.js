@@ -16,7 +16,7 @@
 })(window, function(window, videojs) {
     "use strict";
 
-    var version = "0.4.0";
+    var version = "0.4.1";
     var abLoopPlugin = function (initialOptions) {
 
         //get reference to player
@@ -440,6 +440,7 @@
         };
 
         var loopAtEndOfVideoRequired = false;    //flag set to true if looping around end of video is requierd (where start > end)
+        var startMargin = 0.005;    //sometimes the video will go to a point just before the loop (rounding), so allow a small margin on the start position check.
         //given the current player state and options, should we loop?
         var loopRequired = function(){
             var curTime,endTime,startTime;
@@ -453,12 +454,12 @@
             if (startTime > endTime){
                 loopAtEndOfVideoRequired = true;
                 //if the end is before the start, deal with it
-                if (curTime < startTime && curTime > endTime && ((curTime - endTime) < 1 || opts.loopIfAfterEnd ||opts.loopIfBeforeStart)){
+                if (curTime < (startTime - startMargin) && curTime > endTime && ((curTime - endTime) < 1 || opts.loopIfAfterEnd ||opts.loopIfBeforeStart)){
                     return true;
                 }
             } else {   //startTime <= endTime
                 loopAtEndOfVideoRequired = false;
-                if (curTime < startTime && opts.loopIfBeforeStart){
+                if (curTime < (startTime - startMargin) && opts.loopIfBeforeStart){
                     return true;
                 } else if (curTime >= endTime){
                     //use a margin of one just in case time has skipped a bit past

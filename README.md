@@ -27,7 +27,15 @@ API
 The plugin is controlled by an internal opts object that looks something like this.
 
 ```javascript
-{"start":0,"end":10,"enabled":false,"loopIfBeforeStart":true,"loopIfAfterEnd":true,"pauseBeforeLoop":false,"pauseAfterLoop":false}
+{
+	"start":0,
+	"end":10,
+	"enabled":false,
+	"loopIfBeforeStart":true,
+	"loopIfAfterEnd":true,
+	"pauseBeforeLoop":false,
+	"pauseAfterLoop":false
+}
 ```
 
 These can be set on plugin setup or dynamically via API commands.
@@ -102,7 +110,7 @@ var video = videojs("videoid",{
 			,end:55    	//in seconds. Set to  false to loop to end of video. Defaults to false
 			,enabled:false			//defaults to false
 			,loopIfBeforeStart:false //allow video to play normally before the loop section? defaults to true
-			,looopIfAfterEnd:true	// defaults to true
+			,loopIfAfterEnd:true	// defaults to true
 			,pauseAfterLooping: false     	//if true, after looping video will pause. Defaults to false
 			,pauseBeforeLooping: false     	//if true, before looping video will pause. Defaults to false
 			,createButtons: true		//defaults to true

@@ -1,7 +1,7 @@
 /*
  * Video.js AB loop plugin
  * Adds function to allow looping for a section of a video in video.js player
- * https://github.com/horsepress/videojs-abloop
+ * https://github.com/phhu/videojs-abloop
  * MIT licence
  */
 

@@ -16,7 +16,7 @@
 })(window, function(window, videojs) {
     "use strict";
 
-    var version = "0.4.2";
+    var version = "0.4.4";
     var abLoopPlugin = function (initialOptions) {
 
         //get reference to player

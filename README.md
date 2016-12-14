@@ -95,8 +95,12 @@ See the samples folder for working examples.
 Include the script:
 
 ```html
-<script src="../src/videojs-abloop.js"></script>
+<script src="videojs-abloop.js"></script>
 ```
+Alternatively source it from rawgit.com:
+'''html
+<script src="https://cdn.rawgit.com/phhu/videojs-abloop/master/dist/videojs-abloop.min.js">
+'''
 
 You initialise the plugin with defaults, and then can set properties at runtime.
 

@@ -10,14 +10,14 @@ Interface
 GUI
 ---
 
-Buttons are created on the control bar to set start and end times for the loop, and to enable and disable looping.
+Buttons are created on the right hand side of the control bar to set start and end times for the loop, and to enable and disable looping.
 
 ![GUI screeshot](/images/interfaceScreenshot.png "GUI screeshot")
 
+Left click on the start and end time buttons to set the start and end times to the current video position. Left click on the loop button (rightmost button) to enable and disable looping. 
+
 You can right click on the start and end buttons to skip to the start and end positions. If you right click on the loop
-button you can enable pausing before or after looping.  
-
-
+button you can cycle settings for pausing automatically before or after looping.  
 
 You can set the buttons not to create using the ```createButtons``` setup option.
 

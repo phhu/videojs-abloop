@@ -79,7 +79,7 @@ API commands
 |getUrl()|||
 |getUrlFragment() ||
 |applyUrl() | applyUrl('http://path/to/video.mp4#t=12,13') | Set the video source and apply loop start and end as per the t=start,end fragment |
-|applyUrlFragment() | applyUrlFragment('#t=12,13')  applyUrlFragment('http://path/to/video/is/ignored/only/fragment/applied.mp4#t=12,13') |
+|applyUrlFragment() | applyUrlFragment('#t=12,13')  applyUrlFragment('http://path/ignored.mp4#t=12,13') | As above, but only sets the loop start and end from the URL hash fragment
 |loopRequired()| | returns true or false depending on whether the loop would be activated in the current state. |
 
 Keyboard

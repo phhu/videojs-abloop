@@ -54,33 +54,33 @@ Assuming ```video``` references a videojs player instance:
 API commands
 ------------
 
-| API command | example | notes |
+| API command |  notes | example |
 |-------------|---------|-------|
-|setOptions(optionsObject)     | setOptions({"start":40,"end":45"}) | Options not specified will not be set |
-|getOptions(ArrayOfOptionNames)| getOptions(["start","end"])| Call without an argument to get them all.|
-|goToStart()                   || set player currentTime to start time
+|setOptions(optionsObject)     | Options not specified will not be set  | setOptions({"start":40,"end":45"}) |
+|getOptions(ArrayOfOptionNames)| Call without an argument to get them all.| getOptions(["start","end"])|
+|goToStart()                   | set player currentTime to start time |
 |goToEnd()                     ||
-|setStart(startTime)	       | startTime() startTime(30) startTime("0:34:23") | Call startTime() to set the startTime to the player's currentTime |
-|setEnd(endTime)|  | Call endTime() to set the startTime to the player's currentTime
-|adjustStart(adjustmentInSec)| adjustStart(-5) | adjustStart("1m30s") or adjustStart("1:20:30") also work 
+|setStart(startTime)	       | Call startTime() to set the startTime to the player's currentTime | startTime() startTime(30) startTime("0:34:23") |  
+|setEnd(endTime)|   Call endTime() to set the startTime to the player's currentTime
+|adjustStart(adjustmentInSec) | adjustStart("1m30s") or adjustStart("1:20:30") also work | adjustStart(-5)
 |adjustEnd(adjustmentInSec)| 
-|enable()| | enable the plugin.
-|disable()| |
-|toggle()| |change enabled status
+|enable()|  enable the plugin.
+|disable()| 
+|toggle()| change enabled status
 |togglePauseAfterLooping()| ||
 |togglePauseBeforeLooping()| ||
-|cyclePauseOnLooping()| |cycle between four different compinations of settings for pausing on looping
-|validateOptions()| |set options to valid values if they are not already. This is called every time the loop condition is checked anyway, but you might want to use it manually if setting options while the player is paused or the plugin disabled
-|resetToInitialOptions|| reset options to the ones provided on setup
-|playLoop()| | for convenience, plays the loop from its start. Equivalent to abLoopPlugin.validateOptions().goToStart().enable().player.play()
-|player| |reference to parent player object. e.g. video.abLoopPlugin.enable().player.play()
-|version| |version number
-|getAbsoluteUrl()||
-|getUrl()|||
-|getUrlFragment() ||
-|applyUrl() | applyUrl('http://path/to/video.mp4#t=12,13') | Set the video source and apply loop start and end as per the t=start,end fragment |
-|applyUrlFragment() | applyUrlFragment('#t=12,13')  applyUrlFragment('http://path/ignored.mp4#t=12,13') | As above, but only sets the loop start and end from the URL hash fragment
-|loopRequired()| | returns true or false depending on whether the loop would be activated in the current state. |
+|cyclePauseOnLooping()| cycle between four different compinations of settings for pausing on looping
+|validateOptions()| set options to valid values if they are not already. This is called every time the loop condition is checked anyway, but you might want to use it manually if setting options while the player is paused or the plugin disabled
+|resetToInitialOptions| reset options to the ones provided on setup
+|playLoop()|  for convenience, plays the loop from its start. Equivalent to abLoopPlugin.validateOptions().goToStart().enable().player.play()
+|player| reference to parent player object. e.g. video.abLoopPlugin.enable().player.play()
+|version| version number
+|getAbsoluteUrl()|
+|getUrl()|
+|getUrlFragment() |
+|applyUrl()  | Set the video source and apply loop start and end as per the t=start,end fragment | applyUrl('http://path/to/video.mp4#t=12,13')|
+|applyUrlFragment()  | As above, but only sets the loop start and end from the URL hash fragment | applyUrlFragment('#t=12,13')  applyUrlFragment('http://path/ignored.mp4#t=12,13')
+|loopRequired()|  returns true or false depending on whether the loop would be activated in the current state. |
 
 Keyboard
 --------

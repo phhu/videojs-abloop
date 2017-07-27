@@ -137,10 +137,3 @@ video.abLoopPlugin.onLoopCallBack = function(api,player){
 	api.setEnd(15);
 };
 ```
-
-TODO
-----
-
-* Replace callback with event emission
-* Check compatibility with older browsers
-* Extend tests

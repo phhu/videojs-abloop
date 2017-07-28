@@ -45,16 +45,16 @@ Buttons are created on the right hand side of the control bar to set start and e
 ![GUI screeshot](/images/interfaceScreenshot.png "GUI screeshot")
 
 * Start and end buttons:
-** Left click: set start/end time to current video position. 
-** Right click: skip the video to start/end position. 
-** Shirt + left / right click: move start / end position back / forward (by 0.5s)
-** Ctrl  + left / right click: move start / end position back / forward (by 0.05s)
+    * Left click: set start/end time to current video position. 
+    * Right click: skip the video to start/end position. 
+    * Shirt + left / right click: move start / end position back / forward (by 0.5s)
+    * Ctrl  + left / right click: move start / end position back / forward (by 0.05s)
 
 * Loop button (rightmost button):
-** Left click: enable / disable looping. 
-** right click: cycle settings for pausing automatically before or after looping.  
-** Shift + right click: extract URL fragment for current loop settings
-** Ctrl + right click: extract full URL for video with current loop settings
+    * Left click: enable / disable looping. 
+    * right click: cycle settings for pausing automatically before or after looping.  
+    * Shift + right click: extract URL fragment for current loop settings
+    * Ctrl + right click: extract full URL for video with current loop settings
 ** Alt + right click: extract relative URL for video with current loop settings
 
 You can set the buttons not to create using the ```createButtons``` setup option.

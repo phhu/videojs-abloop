@@ -44,7 +44,7 @@ Buttons are created on the right hand side of the control bar to set start and e
 
 ![GUI screeshot](/images/interfaceScreenshot.png "GUI screeshot")
 
-* Start and end buttons:
+* Start and end buttons (3rd and 2nd from right, showing times):
     * Left click: set start/end time to current video position. 
     * Right click: skip the video to start/end position. 
     * Shirt + left / right click: move start / end position back / forward (by 0.5s)

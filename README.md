@@ -12,13 +12,13 @@ See https://cdn.rawgit.com/phhu/videojs-abloop/master/sample/basic.html
 ```html
 <html>
 	<head>
-		<script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
-		<link href="http://vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet" /> 
+		<script src="https://vjs.zencdn.net/5.6.0/video.js"></script>
+		<link href="https://vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet" /> 
 		<script src="https://cdn.rawgit.com/phhu/videojs-abloop/master/dist/videojs-abloop.min.js"></script>		
 	</head>
 	<body>
 		<video id="vid" controls class="video-js"  >
-			<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+			<source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
 		</video>	
 		<script>	
 			var video = videojs("vid",{

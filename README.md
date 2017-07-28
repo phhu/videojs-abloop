@@ -1,4 +1,4 @@
-This is a plugin for video.js.
+This is a plugin for video.js (http://videojs.com/)
 
 It provides an A/B loop function, allowing a section of a video to be looped over repeatedly.
 

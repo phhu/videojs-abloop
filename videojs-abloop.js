@@ -535,7 +535,22 @@
             ,{
                 'name':'enabled'
                 ,'optionsUsed':['enabled','pauseAfterLooping','pauseBeforeLooping']
-                ,'leftclick':function(api,event){api.toggle();}
+                ,'leftclick':function(api,event){
+					var msg, url;
+                    if (window && window.prompt){
+                        if (event.ctrlKey)      {
+							api.applyUrl(inputPrompt("Set new URL",api.getAbsoluteUrl()));				
+                        } else if (event.altKey)  {
+							api.applyUrl(inputPrompt("Set new URL",api.getUrl()));		
+                        } else if (event.shiftKey){
+                            api.applyUrlFragment(inputPrompt("Set new URL fragment",api.getUrlFragment()));		
+                        } else {
+							api.toggle();
+						}
+                    } else {
+                        api.toggle();
+                    }	
+				}
                 ,'rightclick':function(api,event){
                     var msg;
                     if (window && window.prompt){
@@ -570,6 +585,13 @@
             if (window && window.prompt){
                 window.prompt("Copy to clipboard: Ctrl+C, Enter",msg);
             }
+        };      
+		var inputPrompt = function(message,def){
+            if (window && window.prompt){
+                return window.prompt(message,def);
+            } else {
+				return false;
+			}
         };
         var createButton = function(spec,player){
             //returns a function which handles button clicks,

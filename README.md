@@ -53,9 +53,9 @@ Buttons are created on the right hand side of the control bar to set start and e
 * Loop button (rightmost button):
     * Left click: enable / disable looping. 
     * right click: cycle settings for pausing automatically before or after looping.  
-    * Shift + right click: extract URL fragment for current loop settings
-    * Ctrl + right click: extract full URL for video with current loop settings
-    * Alt + right click: extract relative URL for video with current loop settings
+    * Shift + left/right click: set/extract URL fragment for current loop settings
+    * Ctrl + left/right click: set/extract full URL for video with current loop settings
+    * Alt + left/right click: set/extract relative URL for video with current loop settings
 
 You can set the buttons not to create using the ```createButtons``` setup option.
 

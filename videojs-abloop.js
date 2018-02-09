@@ -16,9 +16,12 @@
 })(window, function (window, videojs) {
 	"use strict";
 
-	var version = "1.0.0";
+	var version = "1.0.1";
 	var abLoopPlugin = function (initialOptions) {
 
+		//default initial options if not specified. 
+		initialOptions = initialOptions || {};
+		
 		//get reference to player
 		var player = this;
 

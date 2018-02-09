@@ -19,6 +19,9 @@
 	var version = "1.0.0";
 	var abLoopPlugin = function (initialOptions) {
 
+		//default initial options if not specified. 
+		initialOptions = initialOptions || {};
+		
 		//get reference to player
 		var player = this;
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link href="vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet">
+	<link href="//vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet">
 	<title>AB loop test page</title>
 	<style>
 	button.vjs-control.vjs-button.abLoopButton {
@@ -23,10 +23,10 @@
 	
 	<br />
 
-	<script src="vjs.zencdn.net/5.6.0/video.js"></script>
+	<script src="//vjs.zencdn.net/5.6.0/video.js"></script>
 	<script src="../videojs-abloop.js"></script>
 	<script src="videojs.hotkeys.js"></script>
-	<script src="cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.min.js"></script>
 
 	<script>
 
@@ -69,11 +69,12 @@
 				,handler: function(player,options){}   // function(player,options){player.doSomething();}
 			});
 			
+			var key = typeof spec.key ==="string" ? spec.key.charCodeAt(): spec.key;
 			return {
 				key: function(e) {
 					//console.log(e.which);
 					return (
-						(e.which === spec.key ) && 
+						(e.which === key ) && 
 						(!!spec.modifiers.ctrl === !!e.ctrlKey) &&
 						(!!spec.modifiers.shift === !!e.shiftKey) &&
 						(!!spec.modifiers.alt === !!e.altKey) &&
@@ -200,21 +201,21 @@
 				seekStep: 5,
 				alwaysCaptureHotkeys: true,
 				customKeys: {
-					slowDownArBr: hotKeySpec({key:188,handler:speedChange(-0.1)})	    // 188 = <
-					,speedUp: hotKeySpec({key:190,handler:speedChange(0.1)})	 	// 190 = >
-					,bigSlowDown: hotKeySpec({key:188,modifiers:{shift:true}, handler:speedChange(-0.5)})					
-					,bigSpeedUp: hotKeySpec({key:190,modifiers:{shift:true}, handler:speedChange(0.5)})
-					,normalSpeedN: hotKeySpec({key:78,handler:function(p){p.playbackRate(1);}})    // 78 = n
-					,smallSkipBackZ: hotKeySpec({key:90,handler:skip(-2)})    // 90 = z
-					,vSmallSkipBack: hotKeySpec({key:90,handler:skip(-0.5),modifiers:{shift:true}})   
-					,smallSkipForward: hotKeySpec({key:88,handler:skip(2)})    // 88 =x 
+					slowDownArBr: 		hotKeySpec({key:188,handler:speedChange(-0.1)})	    // 188 = <
+					,speedUp: 			hotKeySpec({key:190,handler:speedChange(0.1)})	 	// 190 = >
+					,bigSlowDown: 		hotKeySpec({key:188,modifiers:{shift:true}, handler:speedChange(-0.5)})					
+					,bigSpeedUp: 		hotKeySpec({key:190,modifiers:{shift:true}, handler:speedChange(0.5)})
+					,normalSpeedN: 		hotKeySpec({key:78,handler:function(p){p.playbackRate(1);}})    // 78 = n
+					,smallSkipBackZ: 	hotKeySpec({key:90,handler:skip(-2)})    // 90 = z
+					,vSmallSkipBack: 	hotKeySpec({key:90,handler:skip(-0.5),modifiers:{shift:true}})   
+					,smallSkipForward: 	hotKeySpec({key:88,handler:skip(2)})    // 88 =x 
 					,vSmallSkipForward: hotKeySpec({key:88,handler:skip(0.5),modifiers:{shift:true}})    
-					,startLoopA: hotKeySpec({key:65,handler:function(p){p.abLoopPlugin.setStart();}})
-					,endLoopB: hotKeySpec({key:66,handler:function(p){p.abLoopPlugin.setEnd();}})
-					,enableLoopL:hotKeySpec({key:76,handler:function(p){p.abLoopPlugin.toggle();}})
-					,goToStartKeySqBr:hotKeySpec({key:219,handler:function(p){p.abLoopPlugin.goToStart();}})
-					,goToEndSqBr:hotKeySpec({key:221,handler:function(p){p.abLoopPlugin.goToEnd();}})
-					,togglePauseOnLoopK: hotKeySpec({key:75,handler:function(p){p.abLoopPlugin.togglePauseOnLoop();}})
+					,startLoopA: 		hotKeySpec({key:"A",handler:function(p){p.abLoopPlugin.setStart();console.log("start2");}})
+					,endLoopB: 			hotKeySpec({key:"B",handler:function(p){p.abLoopPlugin.setEnd();}})
+					,enableLoopL:		hotKeySpec({key:"L",handler:function(p){p.abLoopPlugin.toggle();}})
+					,goToStartKeySqBr:	hotKeySpec({key:"[",handler:function(p){p.abLoopPlugin.goToStart();console.log("start");}})
+					,goToEndSqBr:		hotKeySpec({key:"]",handler:function(p){p.abLoopPlugin.goToEnd();}})
+					,togglePauseOnLoopK: hotKeySpec({key:"k",handler:function(p){p.abLoopPlugin.togglePauseOnLoop();}})
 				}					
 			});
 		});

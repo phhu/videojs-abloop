@@ -16,7 +16,7 @@
 })(window, function (window, videojs) {
 	"use strict";
 
-	var version = "0.4.5";
+	var version = "1.0.0";
 	var abLoopPlugin = function (initialOptions) {
 
 		//get reference to player
@@ -831,6 +831,8 @@
 
 	abLoopPlugin.loaded = false;
 	abLoopPlugin.VERSION = version;
-	videojs.plugin('abLoopPlugin', abLoopPlugin);
+
+	var registerPlugin = videojs.registerPlugin || videojs.plugin;
+	return registerPlugin('abLoopPlugin', abLoopPlugin);
 
 });

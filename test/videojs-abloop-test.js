@@ -5,15 +5,19 @@ chai.use(chaiAsPromised);
 var expect = chai.expect;
 var should = chai.should();
 var static = require('node-static');
- 
+var http = require('http');
+var port = 8081;
+
+
 //create a static server to serve out the samples 
 
 var fileServer = new static.Server('.'); 
-require('http').createServer(function (request, response) {
+var httpServer = http.createServer(function (request, response) {
     request.addListener('end', function () {
         fileServer.serve(request, response);
     }).resume();
-}).listen(8080);
+}).listen(port);
+httpServer = require('http-shutdown')(httpServer);
 
 
 describe('videojs-abloop', function() {
@@ -28,11 +32,11 @@ describe('videojs-abloop', function() {
             withCapabilities(selenium.Capabilities.firefox()).
             build();
         driver = this.driver;
-        driver.get('http://localhost:8080/sample')
+        driver.get('http://localhost:' + port + '/sample')
             .then(driver.wait(function () {
                 return driver.executeScript("return videos[0] != undefined && videos[0].abLoopPlugin != undefined && videos[0].abLoopPlugin.loaded;");
             }, 8000))
-            .then(done);
+            .then(function(){done()});
     });
     beforeEach(function(done) {
         done();
@@ -41,18 +45,22 @@ describe('videojs-abloop', function() {
 
     // Close the website after each test is run (so that it is opened fresh each time)
     after(function(done) {
-        driver.quit().then(done);
-        //done();
+        httpServer.shutdown(function(){console.log("shut down http server");});
+		driver.quit().then(function(){done()});
     });
+
     it('Should be enablable', function() {
         return driver.executeScript("return videos[0].abLoopPlugin.enable().getOptions().enabled;").should.eventually.equal(true);
     });
+
     it('Should go to start', function() {
         return driver.executeScript("return videos[0].abLoopPlugin.setStart(5).goToStart().player.currentTime();").should.eventually.equal(5);
     });
+
     it('Should go to end', function() {
         return driver.executeScript("return videos[0].abLoopPlugin.setEnd(7).goToEnd().player.currentTime();").should.eventually.equal(7);
-    });   
+    });
+
     it('Should apply URL fragments', function(done) {
         driver.executeScript("return videos[0].abLoopPlugin.applyUrlFragment('#t=2,0:00:03').getOptions();").then(function(opts){ 
             expect(opts.start).to.equal(2);
@@ -60,9 +68,11 @@ describe('videojs-abloop', function() {
             done();
         });
     });
+
     it('Should return URL fragments', function() {
         return driver.executeScript("return videos[1].abLoopPlugin.setStart(1).setEnd(\"0m4s\").getUrlFragment();").should.eventually.equal('#t=1,4');
     });
+
     it('Should allow pausing before looping', function(done) {
         this.timeout(8000); 
         driver.executeScript("return videos[1].abLoopPlugin.setOptions({'pauseBeforeLooping':true,'start':5,'end':7,'enabled':true}).goToStart().getOptions();").then(function(opts){
@@ -84,11 +94,5 @@ describe('videojs-abloop', function() {
             }, 2000);
         });
     }); 
-    /*it('Should have a body', function(done) {
-        this.driver.findElement(selenium.By.tagName('body')).getAttribute('id').then(function(id) {
-            expect(id).to.equal('body');
-            done();
-        });
-    });*/    
     
 });

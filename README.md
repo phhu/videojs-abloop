@@ -71,8 +71,8 @@ The plugin is controlled by an internal opts object that looks something like th
 	"enabled":false,
 	"loopIfBeforeStart":true,
 	"loopIfAfterEnd":true,
-	"pauseBeforeLoop":false,
-	"pauseAfterLoop":false
+	"pauseBeforeLooping":false,
+	"pauseAfterLooping":false
 }
 ```
 
@@ -170,7 +170,7 @@ setTimeout(function() {
 video.abLoopPlugin.onLoopCallBack = function(api,player){
 	var opts = api.getOptions();
 	console.log("Looping back to %s sec on %s",opts.start, player.currentSrc() );
-	api.setOptions({'pauseAfterLoop': true}); 
+	api.setOptions({'pauseAfterLooping': true}); 
 	api.setStart(5);
 	api.setEnd(15);
 };

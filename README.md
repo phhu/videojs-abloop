@@ -7,7 +7,7 @@ The settings can be changed dynamically, either programmatically or via a user i
 Example
 =======
 
-See https://cdn.rawgit.com/phhu/videojs-abloop/master/sample/basic.html
+See https://unpkg.com/videojs-abloop/sample/basic.html
 
 ```html
 <html>

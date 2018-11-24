@@ -14,7 +14,7 @@ See https://unpkg.com/videojs-abloop/sample/basic.html
 	<head>
 		<script src="https://vjs.zencdn.net/5.6.0/video.js"></script>
 		<link href="https://vjs.zencdn.net/5.6.0/video-js.css" rel="stylesheet" /> 
-		<script src="https://cdn.rawgit.com/phhu/videojs-abloop/master/dist/videojs-abloop.min.js"></script>		
+		<script src="https://unpkg.com/videojs-abloop/dist/videojs-abloop.min.js"></script>		
 	</head>
 	<body>
 		<video id="vid" controls class="video-js"  >

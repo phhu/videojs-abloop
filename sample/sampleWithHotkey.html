@@ -2,7 +2,7 @@
 <html>
 <head>
 	<link href="video-js.css" rel="stylesheet">
-	<title>AB loop test page</title>
+	<title>AB loop hotkey examples</title>
 	<style>
 	button.vjs-control.vjs-button.abLoopButton {
 		xbackground: linear-gradient(45deg, rgba(0,0,255,.3) 15%, transparent);
@@ -11,12 +11,26 @@
 </head>
 
 <body>
-	<h2>AB loop test page</h2>
+	<h2>AB loop hotkey examples</h2>
 
-	<video id="video0" class="video-js" controls preload="auto"  width="640" height="264"
-	  poster="//vjs.zencdn.net/v/oceans.png" data-setup='{"controlBar": { "currentTimeDisplay": true,"muteToggle": false },"fluid": false,"playbackRates": [0.1, 0.2, 0.5, 1, 2, 5]}'>
+	<video 
+		id="video0" 
+		class="video-js" 
+		controls 
+		preload="auto"  
+		width="640"
+		height="264"
+	  poster="//vjs.zencdn.net/v/oceans.png" 
+		data-setup='
+			{	"controlBar": { 
+					"currentTimeDisplay": true
+					,"muteToggle": false 
+				}
+				,"fluid": false,
+				"playbackRates": [0.1, 0.2, 0.5, 1, 2, 5]
+			}'
+	>
 		<source src="oceans.mp4" type='video/mp4'>
-
 	</video>
 	
 	<br />
@@ -41,11 +55,14 @@
 			});*/
 			spec.modifiers = spec.modifiers || {};
 			
+			//allow letters as well as codes
+			var key = typeof spec.key === "string" ? spec.key.charCodeAt() : spec.key;
+			
 			return {
 				key: function(e) {
 					//console.log(e.which);
 					return (
-						(e.which === spec.key ) && 
+						(e.which === key ) && 
 						(!!spec.modifiers.ctrl === !!e.ctrlKey) &&
 						(!!spec.modifiers.shift === !!e.shiftKey) &&
 						(!!spec.modifiers.alt === !!e.altKey) &&
@@ -75,17 +92,15 @@
 				}
 			};
 		};
+		var loopSetting = function(funcName, args){
+			return function(player){
+			  //console.log(funcName,args);
+				player.abLoopPlugin[funcName].apply(null,args);
+			};
+		};
 		
 		videos = [
-			videojs("video0"/*,{
-				plugins: {
-
-				}	
-				,cxxontrolBar: {
-					CurrentTimeDisplay: true
-					,muteToggle: false
-				}
-			}*/)
+			videojs("video0")
 		];
 		
 		videos[0].ready(function(){
@@ -97,39 +112,35 @@
 				seekStep: 5,
 				alwaysCaptureHotkeys: true,
 				customKeys: {
-					slowDownArBr: hotKeySpec({key:188,handler:speedChange(-0.1)})	    // 188 = <
-					,speedUp: hotKeySpec({key:190,handler:speedChange(0.1)})	 	// 190 = >
-					,bigSlowDown: hotKeySpec({key:188,modifiers:{shift:true}, handler:speedChange(-0.5)})					
-					,bigSpeedUp: hotKeySpec({key:190,modifiers:{shift:true}, handler:speedChange(0.5)})
-					,normalSpeedN: hotKeySpec({key:78,handler:function(p){p.playbackRate(1);}})    // 78 = n
-					,smallSkipBackZ: hotKeySpec({key:90,handler:skip(-2)})    // 90 = z
-					,vSmallSkipBack: hotKeySpec({key:90,handler:skip(-0.5),modifiers:{shift:true}})   
-					,smallSkipForward: hotKeySpec({key:88,handler:skip(2)})    // 88 =x 
-					,vSmallSkipForward: hotKeySpec({key:88,handler:skip(0.5),modifiers:{shift:true}})    
-					,startLoopA: hotKeySpec({key:65,handler:function(p){p.abLoopPlugin.setStart();}})
-					,endLoopB: hotKeySpec({key:66,handler:function(p){p.abLoopPlugin.setEnd();}})
-					,incLoopStart: hotKeySpec({key:65,modifiers:{shift:true},handler:function(p){p.abLoopPlugin.adjustStart(0.1);}})
-					,decLoopStart: hotKeySpec({key:65,modifiers:{ctrl:true},handler:function(p){p.abLoopPlugin.adjustStart(-0.1);}})
-					,incLoopEnd: hotKeySpec({key:66,modifiers:{shift:true},handler:function(p){p.abLoopPlugin.adjustEnd(0.1);}})
-					,decLoopEnd: hotKeySpec({key:66,modifiers:{ctrl:true},handler:function(p){p.abLoopPlugin.adjustEnd(-0.1);}})
-					,enableLoopL:hotKeySpec({key:76,handler:function(p){p.abLoopPlugin.toggle();}})
-					,goToStartKeySqBr:hotKeySpec({key:219,handler:function(p){p.abLoopPlugin.goToStart();}})
-					,goToEndSqBr:hotKeySpec({key:221,handler:function(p){p.abLoopPlugin.goToEnd();}})
-					,togglePauseOnLoopK: hotKeySpec({key:75,handler:function(p){p.abLoopPlugin.cyclePauseOnLoopStatus();}})
+					slowDownArBr: 				hotKeySpec({key:188,handler:speedChange(-0.1)})	   //// 188 = < 190 = >
+					,speedUp: 						hotKeySpec({key:190,handler:speedChange( 0.1)})	 
+					,bigSlowDown: 				hotKeySpec({key:188,handler:speedChange(-0.5) ,modifiers:{shift:true}})					
+					,bigSpeedUp: 					hotKeySpec({key:190,handler:speedChange( 0.5) ,modifiers:{shift:true}})
+					,normalSpeedN: 				hotKeySpec({key:"N",handler:function(p){p.playbackRate(1);}})    
+					,smallSkipBackZ: 			hotKeySpec({key:"Z",handler:skip(-2)   })    
+					,vSmallSkipBack: 			hotKeySpec({key:"Z",handler:skip(-0.5), modifiers:{shift:true}})   
+					,smallSkipForward: 		hotKeySpec({key:"X",handler:skip(2)     })  
+					,vSmallSkipForward: 	hotKeySpec({key:"X",handler:skip(0.5),  modifiers:{shift:true}})    
+					,startLoopA: 					hotKeySpec({key:"A",handler:loopSetting('setStart')})
+					,endLoopB: 						hotKeySpec({key:"B",handler:loopSetting('setEnd')})
+					,incLoopStart: 				hotKeySpec({key:"A",handler:loopSetting('adjustStart',[ 0.1]),modifiers:{shift:true}})
+					,decLoopStart: 				hotKeySpec({key:"A",handler:loopSetting('adjustStart',[-0.1]),modifiers:{ctrl:true} })
+					,incLoopEnd: 					hotKeySpec({key:"B",handler:loopSetting('adjustEnd',  [ 0.1]),modifiers:{shift:true}})
+					,decLoopEnd: 					hotKeySpec({key:"B",handler:loopSetting('adjustEnd',  [-0.1]),modifiers:{ctrl:true} })
+					,enableLoopL:					hotKeySpec({key:"L",handler:loopSetting('toggle')})
+					,goToStartKeySqBr:		hotKeySpec({key:219,handler:loopSetting('goToStart')})  //  219 = { [
+					,goToEndSqBr:					hotKeySpec({key:221,handler:loopSetting('goToEnd')})    //  221 = } ]
+					,togglePauseOnLoopK: 	hotKeySpec({key:"K",handler:loopSetting('cyclePauseOnLooping')})
 				}					
 			});
 		});
 		//start the first video
 		videos[0].play();
-		
-		//create some buttons
-		//still need to add the icons and status change indication
-		
-
-
 
 	})();
 	</script>
 
+	<p>Ensure the video player as focus to use hotkeys. </p>
+	
 </body>
 </html>

@@ -16,7 +16,7 @@
 })(window, function (window, videojs) {
 	"use strict";
 
-	var version = "1.0.1";
+	var version = "1.0.2";
 	var abLoopPlugin = function (initialOptions) {
 
 		//default initial options if not specified. 
@@ -108,7 +108,7 @@
 					} //allow false values to mean loop til end
 					if (isNumber(x)) {
 						var duration = player.duration();
-						if (duration === undefined || duration === 0) { //duration unknown
+						if (duration === 0 || !(isNumber(duration))) { //duration unknown
 							if (x >= 0) {
 								return x;
 							}
@@ -117,6 +117,8 @@
 								return x;
 							} else if (x > duration) {
 								return duration;
+							} else {    // shouldn't happen....
+								return x;
 							}
 						}
 					}

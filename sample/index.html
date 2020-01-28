@@ -1,7 +1,13 @@
 <!DOCTYPE html>
+
 <html>
 <head>
-	<link href="video-js.css" rel="stylesheet">  <!-- http://vjs.zencdn.net/5.6.0/ -->
+	<meta charset="utf-8"/>
+	<link href="https://vjs.zencdn.net/7.6.6/video-js.css" rel="stylesheet" />
+	<!--
+		<link href="video-js.css" rel="stylesheet">  
+		http://vjs.zencdn.net/5.6.0/ 
+	-->
 	<link href="video-js-extra.css" rel="stylesheet">
 	<title>AB loop test page</title>
 </head>
@@ -9,8 +15,8 @@
 <body id="body">
 	<h2>AB loop test page</h2>
 	<!-- data-setup='{ "controlBar": { "children": { "volumeMenuButton": { "volumeBar": { "vertical": true } }, "muteToggle": false, "volumeControl": false }}} -->
-	First video: should play automatically from start, then loop once between 2 and 8 seconds before pausing
-	<video id="video0" class="video-js" controls preload="auto"  width="640" height="264"
+	First video: should play automatically from start to 5 secs, then loop once between 2 and 8 seconds before pausing
+	<video id="video0" class="video-js" controls preload="auto"  width="640" height="264" muted autoplay
 	  poster="http://vjs.zencdn.net/v/oceans.png" >
 		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
 		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
@@ -21,15 +27,21 @@
 	<br />
 	
 	Second video - should default to looping between 20 and 25 seconds when played:
-	<video id="video1" class="video-js" controls preload="auto"  width="640" height="264"
+	<video id="video1" class="video-js" controls preload="auto"  width="640" height="264" muted
 	  poster="http://vjs.zencdn.net/v/oceans.png">
 		<source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
 		<source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
 		<source src="http://vjs.zencdn.net/v/oceans.ogv" type='video/ogg'>
 		<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
 	</video>
-
-	<script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
+	Third video - no source:
+	<video id="video2" class="video-js" controls preload="auto"  width="640" height="264" muted autoplay
+	  poster="http://vjs.zencdn.net/v/oceans.png">
+	</video>
+	<!--
+		<script src="http://vjs.zencdn.net/5.6.0/video.js"></script>
+	-->
+	<script src="https://vjs.zencdn.net/7.6.6/video.js"></script>
 	<script src="../videojs-abloop.js"></script>
 
 	<script>
@@ -37,6 +49,7 @@
 	
 		videos = [
 			videojs("video0",{
+				//autoplay:true,
 				plugins: {
 					abLoopPlugin: {
 						start:0    //seconds
@@ -46,13 +59,20 @@
 						,loopIfAfterEnd:true
 						,pauseOnLoop: false     //if true, after looping video will pause
 						,createButtons: true
-						,onOptionsChange: function(optionDetails,api,player){console.log("options changed: ", optionDetails);}
+						,onOptionsChange: function(optionDetails,api,player){
+							console.log("options changed: ", player.id(), optionDetails);
+						}
 					}
 				}
 			}),
-			videojs("video1")
+			videojs("video1"),
+			videojs("video2")
 		];
 		
+		/*videos[0].addEventListener('durationchange', function() {
+    	console.log('Duration change', videos[0].duration);
+		});*/		
+
 		//initialisation via ready event
 		videos[1].ready(function(){
 			this.abLoopPlugin({
@@ -61,23 +81,30 @@
 				,enabled:true
 			});
 		});
-		
 		//start the first video
-		videos[0].play();
-
+		videos[0].ready(function(){
+				var playPromise = videos[0].play()
+						.then(res=>console.log("ready play",res))
+						.catch(err => console.error(err));
+				console.log(
+					"ready / attempting to play video0",playPromise
+				);
+		})
+		
 		//add a callback to be called when the loop happens
 		videos[0].abLoopPlugin.onLoopCallBack = function(plugin,player){
 			var opts = this.getOptions();
-			console.log("Looping back to %s sec on %s",opts.start, this.player.currentSrc() );
+			console.log("Looping back to %s sec on %s",opts.start, player.id(), this.player.currentSrc() );
 			plugin.setOptions({pauseAfterLooping:true}); 
 		};
 
 		//set properties dynamically
+		//*
 		setTimeout(function() { 
-			console.log("setting new start and end...");
+			console.log("setting new start and end on videos[0]...");
 			videos[0].abLoopPlugin.setStart().setEnd(8).enable();
-		} , 2000);
-		
+		} , 2500);
+		//*/
 	</script>
 
 </body>

@@ -16,7 +16,7 @@
 })(window, function (window, videojs) {
 	"use strict";
 
-	var version = "1.0.2";
+	var version = "1.0.3";
 	var abLoopPlugin = function (initialOptions) {
 
 		//default initial options if not specified. 
@@ -554,6 +554,8 @@
 				'leftclick': function (api, event) {
 					if (event.shiftKey) {
 						api.adjustStart(-0.5);
+					} else if (event.ctrlKey) {
+						api.adjustStart(-0.05);
 					} else {
 						api.setStart();
 					}
@@ -561,6 +563,8 @@
 				'rightclick': function (api, event) {
 					if (event.shiftKey) {
 						api.adjustStart(0.5);
+					} else if (event.ctrlKey) {
+						api.adjustStart(0.05);
 					} else {
 						api.goToStart();
 					}

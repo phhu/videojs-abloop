@@ -64,8 +64,9 @@ describe('videojs-abloop', function() {
 
     // Close the website after each test is run (so that it is opened fresh each time)
     after(function(done) {
+        this.timeout(5000);
         console.log("Shutting down server");
-        //httpServer.shutdown(function(){console.log("shut down http server");});
+        httpServer.shutdown(function(){console.log("shut down http server");});
         driver
             .quit()
             .then(function(){done()})

@@ -5,41 +5,40 @@
 		<script src="https://unpkg.com/videojs-abloop/dist/videojs-abloop.min.js"></script>		
 	</head>
 	<body>
-		<video id="vid" controls class="video-js" muted >
-		</video>	
+		<video id="vid" controls class="video-js" muted ></video>	
 		<div style="margin-top:20px;"> 
 				 This example fetches a video, then converts it to a blob sets that as the source.
-				 might help with caching / delay on loop issues, since the entire video is held in memory.
+				 Might help with caching / delay on loop issues, since the entire video is held in memory.
 				 Downside is increased load time.
 		</div>	
 		<script>	
-				//See https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch 
-				
-				var video = videojs("vid",{
-					plugins: {
-						abLoopPlugin: {}
-					}
-				});
-				
-				fetch('oceans.mp4')     // or use https://vjs.zencdn.net/v/oceans.mp4
-					.then((res) => {
-						if (!res.ok) {
-							throw new Error('Network response was not ok');
-						}
-						return res.blob();
-					})
-					.then((blob) => {
-						video.src({
-							src: URL.createObjectURL(blob),
-							type: "video/mp4" 
-						});
-						video.ready(function(){
-							this.abLoopPlugin.setStart(10).setEnd(11).playLoop();
-						});
-					})
-					.catch((error) => {
-						console.error('There has been a problem with your fetch operation:', error);
-					});
+	//See https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch 
+	
+	var video = videojs("vid",{
+		plugins: {
+			abLoopPlugin: {}
+		}
+	});
+	
+	fetch('oceans.mp4')     // or use https://vjs.zencdn.net/v/oceans.mp4
+		.then((res) => {
+			if (!res.ok) {
+				throw new Error('Network response was not ok');
+			}
+			return res.blob();
+		})
+		.then((blob) => {
+			video.src({
+				src: URL.createObjectURL(blob),
+				type: "video/mp4" 
+			});
+			video.ready(function(){
+				this.abLoopPlugin.setStart(10).setEnd(11).playLoop();
+			});
+		})
+		.catch((error) => {
+			console.error('There has been a problem with your fetch operation:', error);
+		});
 			
 		</script>
 	</body>

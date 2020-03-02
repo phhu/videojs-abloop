@@ -29,8 +29,10 @@
     "http-shutdown": "^1.2.2",
     "mocha": "^5.2.0",
     "node-static": "^0.7.11",
+    "parcel-bundler": "^1.12.4",
     "selenium": "^2.20.0",
     "selenium-webdriver": "^4.0.0-alpha.5",
-    "uglify-js": "^3.7.6"
+    "uglify-js": "^3.7.6",
+    "video.js": "^7.6.6"
   }
 }

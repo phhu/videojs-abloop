@@ -36,6 +36,10 @@ See https://unpkg.com/videojs-abloop/sample/basic.html
 
 Example from node:
 
+```
+npm install video.js videojs-abloop
+```
+
 ```js
 import videojs from 'video.js'    
 import abLoopPlugin from 'videojs-abloop'
@@ -158,6 +162,9 @@ Alternatively source it from unpkg.com:
 <script src="https://unpkg.com/videojs-abloop/dist/videojs-abloop.min.js">
 ```
 Or use in node.js:
+
+```npm install video.js videojs-abloop```
+
 ```js
 import videojs from 'video.js'    
 import abLoopPlugin from 'videojs-abloop'

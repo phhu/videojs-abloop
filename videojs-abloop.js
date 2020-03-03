@@ -4,19 +4,10 @@
  * https://github.com/phhu/videojs-abloop
  * MIT licence
  */
-;
-(function (root, factory) {
-	if (typeof define === 'function' && define.amd) {
-		define([], factory.bind(this, root, root.videojs));
-	} else if (typeof module !== 'undefined' && module.exports) {
-		module.exports = factory(root, root.videojs);
-	} else {
-		factory(root, root.videojs);
-	}
-})(window, function (window, videojs) {
-	"use strict";
 
-	var version = "1.0.3";
+export default function (window, videojs) {
+
+	var version = "1.1.0";
 	var abLoopPlugin = function (initialOptions) {
 
 		//default initial options if not specified. 
@@ -844,4 +835,4 @@
 	var registerPlugin = videojs.registerPlugin || videojs.plugin;
 	return registerPlugin('abLoopPlugin', abLoopPlugin);
 
-});
+};

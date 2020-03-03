@@ -1,5 +1,5 @@
 sample/oceans.mp4
 node_modules
 *.log
-parcel/.cache
-parcel/dist
+dist/parcelTest.*
+.cache

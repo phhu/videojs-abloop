@@ -34,6 +34,24 @@ See https://unpkg.com/videojs-abloop/sample/basic.html
 </html>
 ```
 
+Example from node:
+
+```js
+import videojs from 'video.js'    
+import abLoopPlugin from 'videojs-abloop'
+
+abLoopPlugin(window,videojs);
+
+const player = videojs('vid',{     //vid is the video element id
+  plugins: {
+    abLoopPlugin: {
+      'start':3
+    }
+  }
+});
+player.abLoopPlugin.setEnd(6.5).playLoop();
+```
+
 Interface
 =========
 
@@ -135,9 +153,16 @@ Include the script:
 ```html
 <script src="videojs-abloop.js"></script>
 ```
-Alternatively source it from rawgit.com:
+Alternatively source it from unpkg.com:
 ```html
-<script src="https://cdn.rawgit.com/phhu/videojs-abloop/master/dist/videojs-abloop.min.js">
+<script src="https://unpkg.com/videojs-abloop/dist/videojs-abloop.min.js">
+```
+Or use in node.js:
+```js
+import videojs from 'video.js'    
+import abLoopPlugin from 'videojs-abloop'
+
+abLoopPlugin(window,videojs);
 ```
 
 You initialise the plugin with defaults, and then can set properties at runtime.

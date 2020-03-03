@@ -1,11 +1,12 @@
 {
   "name": "videojs-abloop",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A video.js plugin allowing looping of a section of video, with GUI and API interface",
   "main": "videojs-abloop.js",
   "scripts": {
     "test": "mocha",
-    "min": "uglifyjs videojs-abloop.js --compress --mangle -o dist/videojs-abloop.min.js"
+    "devserver": "parcel parcelTest.html",
+    "build": "parcel build plugin.js --out-file videojs-abloop.min.js && parcel build plugin.js --no-minify --out-file videojs-abloop.js "
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,9 @@
   },
   "homepage": "https://github.com/phhu/videojs-abloop#readme",
   "dependencies": {},
+  "externals": {
+    "video.js": "videojs"
+  },
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
@@ -30,9 +34,9 @@
     "mocha": "^5.2.0",
     "node-static": "^0.7.11",
     "parcel-bundler": "^1.12.4",
+    "parcel-plugin-externals": "^0.3.2",
     "selenium": "^2.20.0",
     "selenium-webdriver": "^4.0.0-alpha.5",
-    "uglify-js": "^3.7.6",
     "video.js": "^7.6.6"
   }
 }

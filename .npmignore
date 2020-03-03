@@ -2,7 +2,11 @@
 dist/parcelTest.*
 images
 node_modules
-sample
+sample/*.mp4
+sample/*.html
+sample/*.css
+sample/*.js
+!sample/basic.html
 *.log
 parcelTest.*
 plugin.js

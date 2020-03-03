@@ -1,0 +1,8 @@
+.cache
+dist/parcelTest.*
+images
+node_modules
+sample
+*.log
+parcelTest.*
+plugin.js

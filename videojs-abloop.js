@@ -7,7 +7,7 @@
 
 export default function (window, videojs) {
 
-	var version = "1.1.0";
+	var version = "1.1.1";
 	var abLoopPlugin = function (initialOptions) {
 
 		//default initial options if not specified. 

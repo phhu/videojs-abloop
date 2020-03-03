@@ -134,9 +134,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
  * MIT licence
  */
 function _default(window, videojs) {
-  "use strict";
-
-  var version = "1.1.0";
+  var version = "1.1.1";
 
   var abLoopPlugin = function abLoopPlugin(initialOptions) {
     //default initial options if not specified. 

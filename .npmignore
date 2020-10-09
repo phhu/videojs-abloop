@@ -1,5 +1,7 @@
 .cache
-dist/parcelTest.*
+test
+dist
+!dist/videojs-abloop.min.js
 images
 node_modules
 sample/*.mp4
@@ -10,3 +12,4 @@ sample/*.js
 *.log
 parcelTest.*
 plugin.js
+README.md

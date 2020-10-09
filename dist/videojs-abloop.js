@@ -118,13 +118,6 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"gk0h":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = _default;
-
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /*
@@ -133,8 +126,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
  * https://github.com/phhu/videojs-abloop
  * MIT licence
  */
-function _default(window, videojs) {
-  var version = "1.1.2";
+// export default
+module.exports = function (window, videojs) {
+  var version = "1.2.0";
 
   var abLoopPlugin = function abLoopPlugin(initialOptions) {
     //default initial options if not specified. 
@@ -990,9 +984,7 @@ function _default(window, videojs) {
   abLoopPlugin.VERSION = version;
   var registerPlugin = videojs.registerPlugin || videojs.plugin;
   return registerPlugin('abLoopPlugin', abLoopPlugin);
-}
-
-;
+};
 },{}],"GOVZ":[function(require,module,exports) {
 "use strict";
 

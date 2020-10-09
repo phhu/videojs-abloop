@@ -41,8 +41,11 @@ npm install video.js videojs-abloop
 ```
 
 ```js
-import videojs from 'video.js'    
-import abLoopPlugin from 'videojs-abloop'
+//import videojs from 'video.js'
+//import abLoopPlugin from 'videojs-abloop'
+
+const videojs = require('video.js');
+const abLoopPlugin = require('videojs-abloop');
 
 abLoopPlugin(window,videojs);
 

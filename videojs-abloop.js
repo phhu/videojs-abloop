@@ -5,9 +5,10 @@
  * MIT licence
  */
 
-export default function (window, videojs) {
+ // export default
+ module.exports = function (window, videojs) {
 
-	var version = "1.1.2";
+	var version = "1.2.0";
 	var abLoopPlugin = function (initialOptions) {
 
 		//default initial options if not specified. 
